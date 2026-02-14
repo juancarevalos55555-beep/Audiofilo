@@ -1,18 +1,37 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FileUpload from "@/components/FileUpload";
 import Dashboard from "@/components/Dashboard";
 import SystemConnect from "@/components/SystemConnect";
+import AuthModal from "@/components/auth/AuthModal";
+import SettingsModal from "@/components/SettingsModal";
+import PremiumModule from "@/components/PremiumModule";
+import Logo from "@/components/Logo";
+import { useUser } from "@/context/UserContext";
 import { mockEquipmentData } from "@/lib/mockData";
-import { AlertCircle, ShieldCheck, Zap, Info, Library, Cable } from "lucide-react";
+import { AlertCircle, ShieldCheck, Zap, Cable, Settings, Crown, User as UserIcon } from "lucide-react";
 import { clsx } from "clsx";
 
 export default function Home() {
+    const { user, updateProfile } = useUser();
     const [analysisData, setAnalysisData] = useState<any>(null);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
-    const [activeTab, setActiveTab] = useState<"advisor" | "archive" | "connect">("advisor");
+    const [activeTab, setActiveTab] = useState<"advisor" | "connect">("advisor");
+
+    // UI States
+    const [showAuth, setShowAuth] = useState(false);
+    const [showSettings, setShowSettings] = useState(false);
+    const [showPremium, setShowPremium] = useState(false);
+
+    // Initial Gate
+    useEffect(() => {
+        if (!user) {
+            const timer = setTimeout(() => setShowAuth(true), 1500);
+            return () => clearTimeout(timer);
+        }
+    }, [user]);
 
     const handleUpload = async (file: File) => {
         setIsAnalyzing(true);
@@ -47,154 +66,171 @@ export default function Home() {
     };
 
     return (
-        <main className="min-h-screen selection:bg-analog-gold selection:text-gunmetal-grey bg-gunmetal-grey">
+        <main className="min-h-screen bg-obsidian selection:bg-bronze selection:text-obsidian text-bronze/80">
             {/* Global Navigation */}
-            <nav className="fixed top-0 left-0 right-0 z-[100] bg-gunmetal-grey/80 backdrop-blur-md border-b border-analog-gold/10">
-                <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <nav className="fixed top-0 left-0 right-0 z-[100] bg-obsidian/80 backdrop-blur-xl border-b border-white/5">
+                <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
                     <div
-                        className="flex items-center space-x-3 cursor-pointer"
+                        className="flex items-center space-x-4 cursor-pointer group"
                         onClick={() => {
                             setActiveTab("advisor");
                             setAnalysisData(null);
                         }}
                     >
-                        <div className="w-10 h-10 bg-analog-gold flex items-center justify-center rounded-xl">
-                            <Zap className="w-6 h-6 text-gunmetal-grey" />
+                        <Logo className="w-12 h-12" />
+                        <div className="flex flex-col">
+                            <span className="text-2xl font-serif font-black text-white tracking-tighter leading-none">Audiofilo</span>
+                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-bronze/40 group-hover:text-bronze transition-colors">Archivist</span>
                         </div>
-                        <span className="text-xl font-display font-black text-white tracking-tight">Audiofilo <span className="text-analog-gold">Asesor</span></span>
                     </div>
 
-                    <div className="flex items-center space-x-8">
-                        {[
-                            { id: "advisor", label: "Identificar", icon: Zap },
-                            { id: "connect", label: "Conecta tu Sistema", icon: Cable },
-                        ].map((item: any) => (
-                            <button
-                                key={item.id}
-                                onClick={() => setActiveTab(item.id)}
-                                className={clsx(
-                                    "flex items-center space-x-2 text-[10px] font-black uppercase tracking-[0.2em] transition-all",
-                                    activeTab === item.id ? "text-analog-gold" : "text-white/40 hover:text-white"
-                                )}
-                            >
-                                <item.icon className="w-3 h-3" />
-                                <span>{item.label}</span>
-                            </button>
-                        ))}
+                    <div className="flex items-center space-x-12">
+                        <div className="hidden md:flex items-center space-x-8">
+                            {[
+                                { id: "advisor", label: "Identificar", icon: Zap },
+                                { id: "connect", label: "Asesoría", icon: Cable },
+                            ].map((item: any) => (
+                                <button
+                                    key={item.id}
+                                    onClick={() => setActiveTab(item.id)}
+                                    className={clsx(
+                                        "flex items-center space-x-2 text-[10px] font-black uppercase tracking-[0.2em] transition-all",
+                                        activeTab === item.id ? "text-bronze scale-110" : "text-white/20 hover:text-white"
+                                    )}
+                                >
+                                    <item.icon className="w-3.5 h-3.5" />
+                                    <span>{item.label}</span>
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="flex items-center space-x-6 pl-8 border-l border-white/5">
+                            {user ? (
+                                <div className="flex items-center space-x-4">
+                                    <div className="hidden lg:block text-right">
+                                        <p className="text-[9px] font-black uppercase tracking-widest text-bronze/30">Bienvenido de vuelta</p>
+                                        <p className="text-sm font-serif font-bold text-white">{user.name}</p>
+                                    </div>
+                                    <button
+                                        onClick={() => setShowSettings(true)}
+                                        className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:border-bronze/40 transition-all group"
+                                    >
+                                        <Settings className="w-4 h-4 text-white/40 group-hover:text-bronze group-hover:rotate-90 transition-all duration-500" />
+                                    </button>
+                                </div>
+                            ) : (
+                                <button
+                                    onClick={() => setShowAuth(true)}
+                                    className="px-6 py-2.5 bg-bronze/10 border border-bronze/20 text-bronze rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-bronze hover:text-obsidian transition-all"
+                                >
+                                    Inscribirse
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </div>
             </nav>
 
             {!analysisData ? (
-                <div className="max-w-6xl mx-auto px-6 pt-32 pb-20 flex flex-col items-center justify-center space-y-16">
-
+                <div className="max-w-7xl mx-auto px-6 pt-40 pb-20">
                     {activeTab === "advisor" && (
-                        <>
-                            {/* Hero Section */}
-                            <header className="text-center space-y-8 max-w-3xl animate-in fade-in slide-in-from-top-10 duration-1000">
-                                <div className="inline-flex items-center space-x-2 px-3 py-1 bg-analog-gold/10 border border-analog-gold/20 rounded-full text-analog-gold text-[10px] font-bold uppercase tracking-widest mb-4">
-                                    <Zap className="w-3 h-3 fill-analog-gold" />
-                                    <span>Inteligencia Artificial Audiófila</span>
-                                </div>
-                                <h1 className="text-8xl font-display font-black tracking-tighter leading-none bg-gradient-to-b from-white via-analog-gold to-analog-gold/40 bg-clip-text text-transparent">
-                                    Audiofilo Asesor
-                                </h1>
-                                <p className="text-xl text-analog-gold/60 font-medium leading-relaxed">
-                                    La primera plataforma para audiófilos en la cual podrás consultar las especificaciones de cualquier componente solo subiendo una foto. ¿Quieres saber cómo conectar tu sistema de audio? Acá te asesoramos.
-                                </p>
-                            </header>
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-20 items-start">
+                            {/* Left: Hero & Content */}
+                            <div className="lg:col-span-7 space-y-12">
+                                <header className="space-y-8 animate-in fade-in slide-in-from-left-10 duration-1000">
+                                    <div className="inline-flex items-center space-x-3 px-4 py-1.5 bg-bronze/10 border border-bronze/20 rounded-full text-bronze text-[10px] font-black uppercase tracking-[0.3em]">
+                                        <Crown className="w-3 h-3 fill-bronze animate-pulse" />
+                                        <span>Inteligencia Artificial de Élite</span>
+                                    </div>
+                                    <h1 className="text-9xl font-serif font-bold tracking-tighter leading-[0.85] text-white">
+                                        Archivística <br />
+                                        <span className="text-bronze italic">del Sonido.</span>
+                                    </h1>
+                                    <p className="text-xl text-bronze/50 font-display leading-relaxed max-w-xl">
+                                        Identificación profunda de componentes High-End mediante visión artificial. Estilo, sobriedad y precisión técnica para el audiófilo moderno.
+                                    </p>
+                                </header>
 
-                            {/* Core Interaction Area */}
-                            <div className="w-full max-w-4xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-
-                                <div className="space-y-8 animate-in fade-in slide-in-from-left-10 duration-1000 delay-300">
+                                <div className="space-y-10 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300">
                                     <div className="space-y-4">
-                                        <h2 className="text-3xl font-display font-bold text-white">Sube una foto</h2>
-                                        <p className="text-analog-gold/40 text-sm leading-relaxed">
-                                            Cargue una fotografía nítida del frontal o del chasis abierto para una identificación profunda de circuitos y especificaciones técnicas.
+                                        <h2 className="text-3xl font-serif font-bold text-white">Digitaliza tus Circuitos</h2>
+                                        <p className="text-bronze/40 text-sm max-w-lg leading-relaxed">
+                                            Cargue una fotografía nítida del chasis o panel frontal. Nuestra IA Maestro Senior identificará firma sonora, topología y valor de mercado.
                                         </p>
                                     </div>
-
-                                    <div className="space-y-6">
-                                        <FileUpload onUpload={handleUpload} isAnalyzing={isAnalyzing} />
-
-                                        {errorMsg && (
-                                            <div className="glass-gold p-6 rounded-3xl border-analog-gold/20 animate-in zoom-in duration-500">
-                                                <div className="flex items-center space-x-3 text-analog-gold mb-4">
-                                                    <AlertCircle className="w-6 h-6 shrink-0" />
-                                                    <h4 className="font-bold uppercase text-xs tracking-[0.2em]">Configuración Requerida</h4>
-                                                </div>
-
-                                                <p className="text-sm text-white/90 mb-4 leading-relaxed">
-                                                    Para reconocer equipos reales, necesitamos conectar con el motor de IA. Sigue estos pasos:
-                                                </p>
-
-                                                <div className="space-y-3 bg-black/40 p-4 rounded-xl border border-analog-gold/5 text-xs font-mono">
-                                                    <p className="text-analog-gold/80 italic">1. Crea un archivo llamado <span className="text-white">.env.local</span></p>
-                                                    <p className="text-analog-gold/80 italic">2. Agrega esta línea exacta:</p>
-                                                    <div className="bg-white/5 p-2 rounded border border-white/10 text-analog-gold">
-                                                        GEMINI_API_KEY=tu_llave_aqui
-                                                    </div>
-                                                </div>
-
-                                                <div className="mt-4 pt-4 border-t border-analog-gold/10">
-                                                    <p className="text-[10px] text-analog-gold/40">
-                                                        Error detectado: {errorMsg}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
+                                    <FileUpload onUpload={handleUpload} isAnalyzing={isAnalyzing} />
                                 </div>
-
-                                <div className="space-y-6 animate-in fade-in slide-in-from-right-10 duration-1000 delay-500">
-                                    <div className="glass-gold rounded-3xl p-8 space-y-6">
-                                        <div className="space-y-2">
-                                            <h3 className="text-analog-gold font-bold uppercase text-[10px] tracking-[0.3em]">Acceso Directo</h3>
-                                            <p className="text-white text-lg font-display">Pruebe las capacidades de identificación</p>
-                                        </div>
-
-                                        <p className="text-analog-gold/50 text-xs leading-relaxed">
-                                            Explore la profundidad del análisis técnico usando nuestro perfil histórico del **Marantz Model 2270**. Visualice diagramas y especificaciones.
-                                        </p>
-
-                                        <button
-                                            onClick={handleDemo}
-                                            className="btn-premium w-full flex items-center justify-center space-x-3"
-                                        >
-                                            <span>Ver Ejemplo Técnico</span>
-                                            <ShieldCheck className="w-4 h-4" />
-                                        </button>
-                                    </div>
-
-                                    <div className="grid grid-cols-1 gap-4">
-                                        <div className="p-4 glass rounded-2xl space-y-2 text-center">
-                                            <div className="w-8 h-8 rounded-lg bg-analog-gold/10 flex items-center justify-center text-analog-gold mx-auto">
-                                                <Zap className="w-4 h-4" />
-                                            </div>
-                                            <p className="text-[10px] font-bold uppercase tracking-widest text-analog-gold/60 italic">Identificación Instantánea</p>
-                                        </div>
-                                    </div>
-                                </div>
-
                             </div>
-                        </>
+
+                            {/* Right: Premium & Social */}
+                            <aside className="lg:col-span-5 space-y-10 animate-in fade-in slide-in-from-right-10 duration-1000 delay-500">
+                                <PremiumModule onUpgrade={() => setShowPremium(true)} />
+
+                                <div className="glass p-8 rounded-[32px] border border-white/5 space-y-6">
+                                    <div className="space-y-2">
+                                        <h3 className="text-bronze font-black uppercase text-[10px] tracking-[0.4em]">Acceso Directo</h3>
+                                        <p className="text-white text-2xl font-serif font-bold">Laboratorio Técnico</p>
+                                    </div>
+                                    <p className="text-bronze/40 text-xs leading-relaxed">
+                                        Explore el análisis de referencia del **Marantz Model 2270**. Diagramas, componentes críticos y recomendaciones de sinergia de autor.
+                                    </p>
+                                    <button
+                                        onClick={handleDemo}
+                                        className="w-full py-5 border border-bronze/20 text-bronze rounded-2xl flex items-center justify-center space-x-3 text-[10px] font-black uppercase tracking-[0.3em] hover:bg-bronze hover:text-obsidian transition-all group"
+                                    >
+                                        <span>Explorar Análisis de Referencia</span>
+                                        <ShieldCheck className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                                    </button>
+                                </div>
+                            </aside>
+                        </div>
                     )}
 
                     {activeTab === "connect" && <SystemConnect />}
 
-                    <footer className="pt-10 border-t border-analog-gold/5 w-full text-center">
-                        <p className="text-[10px] font-mono text-analog-gold/20 uppercase tracking-[0.5em]">
-                            Sistemas de Audio Avanzados // v1.0.0 Audiofilo Asesor
+                    <footer className="mt-40 pt-12 border-t border-white/5 text-center space-y-4">
+                        <Logo className="w-8 h-8 mx-auto grayscale opacity-20" />
+                        <p className="text-[10px] font-mono text-bronze/20 uppercase tracking-[0.6em]">
+                            Sistemas de Audio Avanzados // v2.0.0 Maestro Premium
                         </p>
                     </footer>
                 </div>
             ) : (
-                <div className="py-12 px-6">
+                <div className="py-24 px-6 md:px-12 bg-obsidian/50 min-h-screen">
                     <Dashboard data={analysisData} onReset={() => {
                         setAnalysisData(null);
                         setErrorMsg(null);
                     }} />
+                </div>
+            )}
+
+            {/* Modals */}
+            {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}
+            {showSettings && <SettingsModal onClose={() => setShowSettings(false)} onOpenPremium={() => setShowPremium(true)} />}
+
+            {/* Simple Premium Upgrade Simulation */}
+            {showPremium && (
+                <div className="fixed inset-0 z-[300] flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-obsidian/95 backdrop-blur-3xl" onClick={() => setShowPremium(false)}></div>
+                    <div className="relative bg-obsidian border border-bronze/30 p-12 rounded-[40px] max-w-md w-full text-center space-y-8 animate-in zoom-in-95 duration-500">
+                        <div className="w-20 h-20 bg-bronze rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-bronze/20">
+                            <Crown className="w-10 h-10 text-obsidian" />
+                        </div>
+                        <div className="space-y-4">
+                            <h2 className="text-4xl font-serif font-bold text-white">Suscripción Maestro</h2>
+                            <p className="text-bronze/60 font-display">Confirmar suscripción mensual por <span className="text-white font-bold">$3 USD</span>.</p>
+                        </div>
+                        <button
+                            onClick={() => {
+                                updateProfile({ isPremium: true });
+                                setShowPremium(false);
+                            }}
+                            className="w-full py-5 bg-bronze text-obsidian rounded-2xl font-black uppercase text-xs tracking-[0.3em] hover:bg-white hover:scale-[1.02] transition-all"
+                        >
+                            Confirmar y Activar
+                        </button>
+                        <button onClick={() => setShowPremium(false)} className="text-[10px] font-black uppercase tracking-widest text-bronze/30 hover:text-bronze transition-colors">Cancelar</button>
+                    </div>
                 </div>
             )}
         </main>

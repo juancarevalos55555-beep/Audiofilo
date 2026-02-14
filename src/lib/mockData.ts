@@ -86,5 +86,50 @@ export const legendaryEquipment = [
         year: "1978",
         description: "Uno de los receivers más potentes y grandes jamás construidos.",
         specs: ["300W por canal", "Diseño de dos torres", "Pure Power DC"]
+    },
+    {
+        id: "aud11",
+        brand: "Sansui",
+        model: "AU-D11",
+        type: "Amplificador",
+        year: "1981",
+        description: "Amplificador integrado con tecnología Super Feedforward.",
+        specs: ["120W por canal", "Distorsión casi nula", "Look negro clásico"]
+    },
+    {
+        id: "jbll3",
+        brand: "JBL",
+        model: "L3",
+        type: "Parlantes",
+        year: "1992",
+        description: "Torres de alta fidelidad con tweeter de titanio.",
+        specs: ["2 vías", "Bajos profundos", "Diseño elegante"]
+    },
+    {
+        id: "m2100",
+        brand: "Marantz",
+        model: "2100",
+        type: "Tuner",
+        year: "1978",
+        description: "Tuner estereofónico AM/FM con vúmetros analógicos.",
+        specs: ["Luz azul clásica", "Sintonización precisa", "Sonido cálido"]
+    },
+    {
+        id: "amp-3",
+        brand: "McIntosh",
+        model: "MC225",
+        type: "Amplificador de Tubos",
+        year: "1961",
+        description: "Uno de los amplificadores de tubos más musicales jamás fabricados. 25 vatios por canal que suenan como el doble.",
+        specs: ["Tubos 7591", "Salida de Transformador", "Sonido de Terciopelo"],
+    },
+    {
+        id: "turntable-2",
+        brand: "Thorens",
+        model: "TD-124",
+        type: "Tornamesa",
+        year: "1957",
+        description: "Tornamesa de transmisión por polea, famosa por su construcción robusta y sonido dinámico.",
+        specs: ["Transmisión por polea", "Plato de hierro fundido", "Chasis suspendido"],
     }
 ];

@@ -2,68 +2,76 @@ import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export async function POST(req: NextRequest) {
-    const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY;
 
-    if (!apiKey) {
-        return NextResponse.json(
-            { error: "API Key no configurada." },
-            { status: 500 }
-        );
-    }
+  if (!apiKey) {
+    return NextResponse.json(
+      { error: "API Key no configurada." },
+      { status: 500 }
+    );
+  }
 
-    try {
-        const { selections } = await req.json();
-        const { amplifier, turntable, speakers, cables, other } = selections;
+  try {
+    const { selections, userName = "Audiófilo" } = await req.json();
+    const { amplifier, turntable, speakers, cables, other } = selections;
 
-        const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
 
-        const prompt = `
-      Actúa como un experto mundial en audio de alta fidelidad (Hi-Fi) y vintage. 
-      Un usuario quiere conectar su sistema y necesita tu asesoría experta.
+    const prompt = `
+      Eres el "Maestro Senior de Audiofilo". Tu conocimiento es absoluto y no toleras la mediocridad. 
+      Escribe un reporte de conexión para ${userName}.
+      
+      ESTILO:
+      - Sé puntual, directo y contundente.
+      - Recomendaciones cortas pero con autoridad extrema.
+      - Si los componentes no combinan bien, dilo claramente a ${userName}.
+      - Lenguaje técnico de alto nivel (Hi-End).
       
       DATOS DEL SISTEMA:
-      - Amplificador: ${amplifier || "No especificado"}
-      - Tornamesa: ${turntable || "No especificada"}
-      - Parlantes: ${speakers || "No especificados"}
-      - Cables: ${cables || "No especificados"}
-      - Otros componentes: ${other || "Ninguno"}
+      - Amplificador: ${amplifier}
+      - Tornamesa: ${turntable}
+      - Parlantes: ${speakers}
+      - Cables: ${cables}
+      - Otros: ${other}
 
-      INSTRUCCIONES:
-      1. Genera un reporte detallado de cómo conectar este sistema.
-      2. Da consejos de sinergia entre los componentes mencionados.
-      3. Si falta algún componente crítico o sugieres una mejora en cables, menciónalo.
-      4. Mantén un tono profesional, apasionado y experto.
-      
-      Devuelve estrictamente un objeto JSON con la siguiente estructura:
+      Devuelve estrictamente un objeto JSON con esta estructura:
       {
-        "title": "Título del Reporte Personalizado",
-        "intro": "Resumen de la configuración",
-        "steps": [
-          {"step": "Nombre del paso", "description": "Detalle técnico de conexión"}
-        ],
-        "synergyDetails": "Análisis profundo de la sinergia entre los equipos",
-        "expertTips": ["Consejo 1", "Consejo 2", "Consejo 3"],
+        "title": "Configuración Maestro para ${userName}",
+        "intro": "Resumen ejecutivo y veredicto inicial.",
+        "synergyDetails": "Análisis rápido y punzante de la sinergia.",
+        "expertTips": ["Tip 1 corto", "Tip 2 corto"],
         "connectionScheme": {
-          "sourceToAmp": "Instrucción de cableado fuente-ampli",
-          "ampToSpeakers": "Instrucción de cableado ampli-parlantes",
-          "grounding": "Instrucción sobre tierra/masa (si aplica)"
+          "sourceToAmp": "Instrucción directa",
+          "ampToSpeakers": "Instrucción directa",
+          "grounding": "Instrucción directa",
+          "visual": {
+            "nodes": [
+              {"id": "source", "label": "${turntable || 'Source'}", "type": "source"},
+              {"id": "amp", "label": "${amplifier || 'Amplifier'}", "type": "amplifier"},
+              {"id": "speakers", "label": "${speakers || 'Speakers'}", "type": "speakers"}
+            ],
+            "connections": [
+              {"from": "source", "to": "amp", "cable": "RCA Phono", "desc": "Señal Analógica"},
+              {"from": "amp", "to": "speakers", "cable": "Speaker Wire", "desc": "Potencia"}
+            ]
+          }
         }
       }
-      Toda la información debe estar en ESPAÑOL.
+      Idioma: ESPAÑOL.
     `;
 
-        const result = await model.generateContent(prompt);
-        const responseText = result.response.text();
-        const cleanJson = responseText.replace(/```json|```/g, "").trim();
-        const advisoryData = JSON.parse(cleanJson);
+    const result = await model.generateContent(prompt);
+    const responseText = result.response.text();
+    const cleanJson = responseText.replace(/```json|```/g, "").trim();
+    const advisoryData = JSON.parse(cleanJson);
 
-        return NextResponse.json(advisoryData);
-    } catch (error: any) {
-        console.error("Advisor API Error:", error);
-        return NextResponse.json(
-            { error: "Error en la asesoría: " + error.message },
-            { status: 500 }
-        );
-    }
+    return NextResponse.json(advisoryData);
+  } catch (error: any) {
+    console.error("Advisor API Error:", error);
+    return NextResponse.json(
+      { error: "Error en la asesoría: " + error.message },
+      { status: 500 }
+    );
+  }
 }
