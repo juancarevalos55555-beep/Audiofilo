@@ -143,11 +143,10 @@ export default function Home() {
                                         <span>Inteligencia artificial para Audiofilos</span>
                                     </div>
                                     <h1 className="text-9xl font-serif font-bold tracking-tighter leading-[0.85] text-white">
-                                        Archivística <br />
-                                        <span className="text-bronze italic">del Sonido.</span>
+                                        Fónica
                                     </h1>
                                     <p className="text-xl text-bronze/50 font-display leading-relaxed max-w-xl">
-                                        Identificación profunda de componentes High-End mediante visión artificial. Estilo, sobriedad y precisión técnica para el audiófilo moderno.
+                                        Una IA especializada para audiofilos que te conecta con el mundo del audio.
                                     </p>
                                 </header>
 
