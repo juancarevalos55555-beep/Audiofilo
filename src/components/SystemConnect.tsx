@@ -14,7 +14,7 @@ export default function SystemConnect() {
     const [report, setReport] = useState<any>(null);
     const reportRef = useRef<HTMLDivElement>(null);
     const [chatMessages, setChatMessages] = useState<{ role: string, content: string }[]>([
-        { role: "assistant", content: user ? `Hola ${user.name}, soy tu experto audiofilo. ¿En qué puedo ayudarte hoy?` : "Hola, soy tu experto audiofilo. ¿En qué puedo ayudarte con tus equipos hoy?" }
+        { role: "assistant", content: user ? `Hola ${user.name}, es un placer saludarte. Soy tu asesor de Fónica. ¿Cómo puedo ayudarte a perfeccionar tu experiencia sonora hoy?` : "Hola, soy tu experto de Fónica. ¿En qué puedo asesorarte con tus equipos de audio hoy?" }
     ]);
     const [currentMessage, setCurrentMessage] = useState("");
     const [isChatLoading, setIsChatLoading] = useState(false);
