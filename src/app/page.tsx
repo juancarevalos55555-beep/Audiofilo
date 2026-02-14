@@ -142,7 +142,7 @@ export default function Home() {
                                         <Crown className="w-3 h-3 fill-bronze animate-pulse" />
                                         <span>Inteligencia artificial para Audiofilos</span>
                                     </div>
-                                    <h1 className="text-9xl font-serif font-bold tracking-tighter leading-[0.85] text-white">
+                                    <h1 className="text-6xl font-serif font-bold tracking-tighter leading-[0.85] text-white">
                                         Fónica
                                     </h1>
                                     <p className="text-xl text-bronze/50 font-display leading-relaxed max-w-xl">
