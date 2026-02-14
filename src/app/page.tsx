@@ -3,7 +3,6 @@
 import { useState } from "react";
 import FileUpload from "@/components/FileUpload";
 import Dashboard from "@/components/Dashboard";
-import Archive from "@/components/Archive";
 import SystemConnect from "@/components/SystemConnect";
 import { mockEquipmentData } from "@/lib/mockData";
 import { AlertCircle, ShieldCheck, Zap, Info, Library, Cable } from "lucide-react";
@@ -68,7 +67,6 @@ export default function Home() {
                     <div className="flex items-center space-x-8">
                         {[
                             { id: "advisor", label: "Identificar", icon: Zap },
-                            { id: "archive", label: "Archivo de Audio", icon: Library },
                             { id: "connect", label: "Conecta tu Sistema", icon: Cable },
                         ].map((item: any) => (
                             <button
@@ -183,7 +181,6 @@ export default function Home() {
                         </>
                     )}
 
-                    {activeTab === "archive" && <Archive />}
                     {activeTab === "connect" && <SystemConnect />}
 
                     <footer className="pt-10 border-t border-analog-gold/5 w-full text-center">
