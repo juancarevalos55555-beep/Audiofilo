@@ -103,7 +103,7 @@ export default function SystemConnect() {
         const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
         pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-        pdf.save(`Asesoria_Audiofilo_${user?.name || "Premium"}.pdf`);
+        pdf.save(`Asesoria_Fonica_${user?.name || "Premium"}.pdf`);
     };
 
     const resetAdvisor = () => {

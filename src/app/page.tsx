@@ -79,8 +79,8 @@ export default function Home() {
                     >
                         <Logo className="w-12 h-12" />
                         <div className="flex flex-col">
-                            <span className="text-2xl font-serif font-black text-white tracking-tighter leading-none">Audiofilo</span>
-                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-bronze/40 group-hover:text-bronze transition-colors">Archivist</span>
+                            <span className="text-2xl font-serif font-black text-white tracking-tighter leading-none">Fónica</span>
+                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-bronze/40 group-hover:text-bronze transition-colors">Audiofilo Experiencia</span>
                         </div>
                     </div>
 

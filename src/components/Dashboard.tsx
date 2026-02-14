@@ -45,7 +45,7 @@ export default function Dashboard({ data, onReset }: DashboardProps) {
             const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
             pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-            pdf.save(`Ficha_Audiofilo_${user?.name?.replace(/\s+/g, '_') || "Premium"}_${data?.brand || "Equipo"}.pdf`);
+            pdf.save(`Ficha_Fonica_${user?.name?.replace(/\s+/g, '_') || "Premium"}_${data?.brand || "Equipo"}.pdf`);
         } catch (error) {
             console.error("PDF Export Error:", error);
             alert("No se pudo generar el PDF. Revisa la consola.");
@@ -63,7 +63,7 @@ export default function Dashboard({ data, onReset }: DashboardProps) {
                     <div>
                         <div className="flex items-center space-x-2">
                             <Crown className="w-4 h-4 text-bronze animate-pulse" />
-                            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-bronze/60">Análisis Maestro de Audiofilo</span>
+                            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-bronze/60">Análisis Maestro de Fónica</span>
                         </div>
                         <h2 className="text-5xl font-serif font-bold tracking-tighter text-white">
                             {data?.brand || "Equipo"} <span className="text-bronze italic">{data?.model || "Desconocido"}</span>

@@ -8,8 +8,8 @@ const outfit = Outfit({ subsets: ["latin"], variable: "--font-display" });
 const lora = Lora({ subsets: ["latin"], variable: "--font-serif" });
 
 export const metadata: Metadata = {
-    title: "Audiofilo Asesor | Tu Guía Hi-Fi",
-    description: "La primera plataforma para audiófilos: especificaciones de componentes y asesoría técnica.",
+    title: "Fónica | Tu Guía Hi-Fi",
+    description: "La primera plataforma para audiófilos: especificaciones de componentes y asesoría técnica premium.",
 };
 
 export default function RootLayout({
