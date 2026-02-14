@@ -54,8 +54,8 @@ export default function AuthModal({ onClose }: { onClose: () => void }) {
                 <div className="p-10 space-y-8">
                     <div className="flex justify-between items-start">
                         <div className="space-y-2">
-                            <h2 className="text-4xl font-serif font-bold text-white tracking-tight">Bienvenido a <span className="text-bronze italic">Audiofilo</span></h2>
-                            <p className="text-bronze/60 text-sm font-display">Inicia tu archivística personalizada hoy.</p>
+                            <h2 className="text-4xl font-serif font-bold text-white tracking-tight">Bienvenido a <span className="text-bronze italic">Fónica</span></h2>
+                            <p className="text-bronze/60 text-sm font-display">Inteligencia Artificial para Audiofilos</p>
                         </div>
                         <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors text-white/40 hover:text-white">
                             <X className="w-6 h-6" />
@@ -164,7 +164,7 @@ export default function AuthModal({ onClose }: { onClose: () => void }) {
                 </div>
 
                 <div className="p-6 bg-white/5 border-t border-white/5 text-center">
-                    <p className="text-[9px] text-bronze/30 uppercase tracking-[0.4em] font-mono">Audiofilo Archivist // Private Access</p>
+                    <p className="text-[9px] text-bronze/30 uppercase tracking-[0.4em] font-mono">Fónica // Audiofilo Experiencia</p>
                 </div>
             </div>
         </div>
