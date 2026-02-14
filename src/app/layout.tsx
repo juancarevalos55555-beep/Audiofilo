@@ -6,8 +6,8 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-display" });
 
 export const metadata: Metadata = {
-    title: "AudioArchivist | Identificación Hi-Fi",
-    description: "Identificación y diagnóstico de componentes de audio vintage y alta fidelidad.",
+    title: "Audiofilo Asesor | Tu Guía Hi-Fi",
+    description: "La primera plataforma para audiófilos: especificaciones de componentes y asesoría técnica.",
 };
 
 export default function RootLayout({

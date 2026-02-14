@@ -30,8 +30,8 @@ export default function Dashboard({ data, onReset }: DashboardProps) {
                             {data?.brand || "Equipo"} {data?.model || "Desconocido"}
                         </h2>
                         <div className="flex items-center space-x-3 mt-1">
-                            <span className="px-2 py-0.5 bg-analog-gold/10 text-analog-gold text-[10px] font-bold uppercase tracking-[0.2em] rounded">Certificado Oficial</span>
-                            <p className="text-analog-gold/40 font-mono text-xs uppercase tracking-tighter">ID: AA-{Math.floor(Math.random() * 900000 + 100000)}</p>
+                            <span className="px-2 py-0.5 bg-analog-gold/10 text-analog-gold text-[10px] font-bold uppercase tracking-[0.2em] rounded">Asesoría Técnica</span>
+                            <p className="text-analog-gold/40 font-mono text-xs uppercase tracking-tighter">ID: AF-{Math.floor(Math.random() * 900000 + 100000)}</p>
                         </div>
                     </div>
                 </div>
@@ -42,12 +42,12 @@ export default function Dashboard({ data, onReset }: DashboardProps) {
                         className="flex items-center space-x-3 px-6 py-3 bg-analog-gold text-gunmetal-grey font-black uppercase text-xs tracking-widest rounded-xl hover:bg-white transition-all transform hover:-translate-y-0.5 shadow-xl shadow-analog-gold/10"
                     >
                         <Download className="w-4 h-4" />
-                        <span>Exportar Peritaje</span>
+                        <span>Exportar Ficha</span>
                     </button>
                     <button
                         onClick={onReset}
                         className="p-3 border border-analog-gold/20 rounded-xl hover:bg-analog-gold/10 transition-all text-analog-gold/60"
-                        title="Nueva Identificación"
+                        title="Nueva Consulta"
                     >
                         <RotateCcw className="w-5 h-5" />
                     </button>

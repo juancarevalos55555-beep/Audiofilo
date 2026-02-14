@@ -77,9 +77,9 @@ export default function FileUpload({ onUpload, isAnalyzing }: FileUploadProps) {
                             <Upload className="w-10 h-10 text-analog-gold" />
                         </div>
                         <div className="space-y-2">
-                            <h3 className="text-2xl font-display font-bold text-white group-hover:text-analog-gold transition-colors">Revelar Componente</h3>
+                            <h3 className="text-2xl font-display font-bold text-white group-hover:text-analog-gold transition-colors">Sube una foto</h3>
                             <p className="text-analog-gold/40 text-xs max-w-xs mx-auto leading-relaxed">
-                                Suelta una imagen aquí o haz clic para cargar. La IA identificará marca, modelo y estado de culto.
+                                Suelta una imagen aquí o haz clic para cargar. La IA identificará marca, modelo y especificaciones técnicas.
                             </p>
                         </div>
                         <div className="flex items-center space-x-4 pt-4 text-[9px] font-black uppercase tracking-[0.2em] text-analog-gold/30">
