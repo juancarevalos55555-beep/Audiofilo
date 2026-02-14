@@ -140,7 +140,7 @@ export default function Home() {
                                 <header className="space-y-8 animate-in fade-in slide-in-from-left-10 duration-1000">
                                     <div className="inline-flex items-center space-x-3 px-4 py-1.5 bg-bronze/10 border border-bronze/20 rounded-full text-bronze text-[10px] font-black uppercase tracking-[0.3em]">
                                         <Crown className="w-3 h-3 fill-bronze animate-pulse" />
-                                        <span>Inteligencia Artificial de Élite</span>
+                                        <span>Inteligencia artificial para Audiofilos</span>
                                     </div>
                                     <h1 className="text-9xl font-serif font-bold tracking-tighter leading-[0.85] text-white">
                                         Archivística <br />
