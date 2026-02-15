@@ -61,10 +61,6 @@ export default function Home() {
         }
     };
 
-    const handleDemo = () => {
-        setErrorMsg(null);
-        setAnalysisData(mockEquipmentData);
-    };
 
     return (
         <main className="min-h-screen bg-netflix-black text-white selection:bg-netflix-red">
@@ -159,15 +155,6 @@ export default function Home() {
                                             <Zap className="fill-black" />
                                             <span>Comenzar Análisis Gratis</span>
                                         </button>
-                                        <button
-                                            onClick={handleDemo}
-                                            className="px-8 py-3 bg-netflix-hover/40 text-white font-bold rounded flex items-center space-x-2 border border-white/20 hover:bg-netflix-hover transition-all"
-                                        >
-                                            <div className="w-6 h-6 rounded-full border-2 border-white flex items-center justify-center">
-                                                <div className="w-0 h-0 border-t-4 border-t-transparent border-l-8 border-l-white border-b-4 border-b-transparent ml-1" />
-                                            </div>
-                                            <span>Ver Demo</span>
-                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -190,27 +177,6 @@ export default function Home() {
                                         <div className="lg:col-span-4">
                                             <PremiumModule onUpgrade={() => setShowPremium(true)} />
                                         </div>
-                                    </div>
-                                </section>
-
-                                {/* Featured Row / Carousel Placeholder */}
-                                <section className="space-y-6">
-                                    <h2 className="text-2xl font-bold text-white">Laboratorio Técnico</h2>
-                                    <div className="flex space-x-4 overflow-x-auto pb-6 scrollbar-hide">
-                                        {[1, 2, 3, 4].map((i) => (
-                                            <div key={i} className="card-netflix min-w-[300px] h-[170px] bg-netflix-dark border border-netflix-border/50 relative group">
-                                                <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent z-10" />
-                                                <div className="absolute inset-x-4 bottom-4 z-20">
-                                                    <p className="text-premium-gold font-bold text-sm">RECOMENDADO</p>
-                                                    <p className="text-white font-bold text-lg">Marantz Model 2270</p>
-                                                    <div className="flex items-center space-x-2 text-xs text-netflix-muted opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        <span>Análisis Profundo</span>
-                                                        <span>•</span>
-                                                        <span>Referencia Hi-Fi</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
                                     </div>
                                 </section>
                             </div>

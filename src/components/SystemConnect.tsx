@@ -29,45 +29,54 @@ export default function SystemConnect() {
 
     // Persistence and Initialize
     useEffect(() => {
-        const savedChat = localStorage.getItem("fonica_chat_history");
+        const savedChat = localStorage.getItem("fonica_chat_history_v2");
         if (savedChat) {
             setChatMessages(JSON.parse(savedChat));
         } else {
-            setChatMessages([
-                { role: "assistant", content: user ? `Hola ${user.name}. Soy tu experto en Hi-Fi. He analizado tu configuración actual. ¿Qué aspecto técnico de tu sistema deseas optimizar hoy?` : "Hola, soy experto en Audio. Describe tus componentes o hazme una consulta técnica para comenzar." }
-            ]);
+            const welcomeMsg = {
+                role: "assistant",
+                content: "¡Hola! 👋 Soy tu asesor experto en audio Hi-Fi.\n\nCon más de 35 años de experiencia en equipos analógicos y digitales, estoy aquí para ayudarte con:\n\n🔸 Identificación de equipos vintage y modernos\n🔸 Recomendaciones de componentes y sinergias\n🔸 Diagnóstico de problemas técnicos\n🔸 Configuración óptima de tu sistema\n🔸 Consejos de compra y valoración de mercado\n\n¿En qué puedo ayudarte hoy?",
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+            setChatMessages([welcomeMsg]);
         }
 
-        const count = localStorage.getItem("fonica_msg_count");
+        const count = localStorage.getItem("fonica_msg_count_v2");
         if (count) setMsgCount(parseInt(count));
-    }, [user]);
+    }, []);
 
     useEffect(() => {
         if (chatMessages.length > 0) {
-            localStorage.setItem("fonica_chat_history", JSON.stringify(chatMessages));
+            // Limit to 50 messages
+            const limitedHistory = chatMessages.slice(-50);
+            localStorage.setItem("fonica_chat_history_v2", JSON.stringify(limitedHistory));
         }
         chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [chatMessages]);
 
     useEffect(() => {
-        localStorage.setItem("fonica_msg_count", msgCount.toString());
+        localStorage.setItem("fonica_msg_count_v2", msgCount.toString());
     }, [msgCount]);
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setSelections(prev => ({ ...prev, [name]: value }));
-    };
 
     const sendMessage = async (messageOverride?: string) => {
         const msgToSend = messageOverride || currentMessage;
         if (!msgToSend.trim() || isChatLoading) return;
 
-        if (msgCount >= 20 && !user?.isPremium) {
-            setChatMessages(prev => [...prev, { role: "assistant", content: "Has alcanzado el límite de 20 mensajes gratuitos. Por favor, suscríbete a Fónica Maestro para continuar recibiendo asesoría ilimitada." }]);
+        const maxFree = 15;
+        if (msgCount >= maxFree && !user?.isPremium) {
+            setChatMessages(prev => [...prev, {
+                role: "assistant",
+                content: "Has alcanzado el límite de consultas gratuitas. Actualiza a Premium para consultas ilimitadas.",
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            }]);
             return;
         }
 
-        const userMsg = { role: "user", content: msgToSend };
+        const userMsg = {
+            role: "user",
+            content: msgToSend,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
         setChatMessages(prev => [...prev, userMsg]);
         setCurrentMessage("");
         setIsChatLoading(true);
@@ -77,255 +86,172 @@ export default function SystemConnect() {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    messages: [...chatMessages, userMsg],
-                    userName: user?.name || "Audiófilo",
-                    selections: selections
+                    messages: chatMessages.concat(userMsg),
+                    userName: user?.name || "Audiófilo"
                 }),
             });
             const data = await response.json();
-            setChatMessages(prev => [...prev, data]);
+            const aiMsg = {
+                ...data,
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+            setChatMessages(prev => [...prev, aiMsg]);
             setMsgCount(prev => prev + 1);
         } catch (error) {
             console.error("Chat Error:", error);
-            setChatMessages(prev => [...prev, { role: "assistant", content: "Lo siento, hubo un problema técnico al procesar tu consulta." }]);
+            setChatMessages(prev => [...prev, {
+                role: "assistant",
+                content: "Disculpa, tuve un problema técnico. Intenta de nuevo.",
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            }]);
         } finally {
             setIsChatLoading(false);
         }
     };
 
     const clearChat = () => {
-        localStorage.removeItem("fonica_chat_history");
-        const initialMsg = { role: "assistant", content: user ? `Hola ${user.name}. Soy tu experto en Hi-Fi. ¿En qué puedo ayudarte?` : "Hola, soy tu experto en Hi-Fi. ¿En qué puedo ayudarte?" };
-        setChatMessages([initialMsg]);
+        localStorage.removeItem("fonica_chat_history_v2");
+        const welcomeMsg = {
+            role: "assistant",
+            content: "¡Hola! 👋 Soy tu asesor experto en audio Hi-Fi. ¿En qué puedo ayudarte hoy?",
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        setChatMessages([welcomeMsg]);
+        setMsgCount(0);
     };
 
     const suggestions = [
-        "¿Qué amplificador me recomiendas?",
-        "Explica la clase A vs AB",
-        "Mejoras para mi tornamesa",
-        "Troubleshooting de ruidos"
+        "¿Qué amplificador me recomiendas para empezar?",
+        "Explica la diferencia entre clase A y clase AB",
+        "¿Cómo mejoro la acústica de mi sala?",
+        "¿Vale la pena un amplificador de válvulas?"
     ];
 
-    const generateAdvisory = async () => {
-        setIsGenerating(true);
-        try {
-            const response = await fetch("/api/advisor", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    selections,
-                    userName: user?.name || "Audiófilo"
-                }),
-            });
-
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.error);
-            setReport(data);
-        } catch (error) {
-            console.error("Error:", error);
-            alert("No se pudo generar la asesoría técnica detallada.");
-        } finally {
-            setIsGenerating(false);
-        }
-    };
-
-    const downloadPDF = async () => {
-        if (!reportRef.current) return;
-        const canvas = await html2canvas(reportRef.current, { scale: 2, backgroundColor: "#141414", logging: false, useCORS: true });
-        const imgData = canvas.toDataURL("image/png");
-        const pdf = new jsPDF("p", "mm", "a4");
-        const imgProps = pdf.getImageProperties(imgData);
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-        pdf.save(`Asesoria_Fonica_${user?.name || "Premium"}.pdf`);
-    };
-
     return (
-        <div className="w-full max-w-7xl mx-auto space-y-12 animate-in fade-in duration-1000 px-6 pt-24 pb-20">
-            <header className="space-y-4">
-                <div className="flex items-center space-x-2 text-netflix-red font-bold text-sm">
-                    <Sparkles className="w-4 h-4" />
-                    <span className="uppercase tracking-widest">Asesoría Maestra</span>
-                </div>
-                <h1 className="text-4xl md:text-5xl font-bold text-white">Configuración y <span className="text-netflix-red">Sinergia.</span></h1>
+        <div className="w-full max-w-7xl mx-auto space-y-8 animate-in fade-in duration-1000 px-4 md:px-6 pt-24 pb-12">
+            <header className="max-w-4xl mx-auto text-center space-y-2">
+                <h1 className="text-3xl md:text-4xl font-bold text-white flex items-center justify-center space-x-3">
+                    <span className="text-2xl md:text-3xl">💬</span>
+                    <span>Chat con Experto Audiófilico</span>
+                </h1>
+                <p className="text-netflix-muted font-medium">Tu asesor personal en equipos Hi-Fi • Respuestas en tiempo real</p>
             </header>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-                {/* Left Column: Gear Setup */}
-                <div className="lg:col-span-4 space-y-8">
-                    <div className="bg-netflix-dark p-8 rounded-lg border border-netflix-border/50 space-y-8">
-                        <div className="space-y-2">
-                            <h3 className="text-lg font-bold text-white">Tu Sistema</h3>
-                            <p className="text-sm text-netflix-muted">Declara tus componentes para que el experto tenga contexto total.</p>
+            <div className="max-w-4xl mx-auto w-full flex flex-col h-[75vh] md:h-[700px] bg-[#1a1a1a] rounded-xl border border-[#404040] overflow-hidden relative shadow-2xl bg-gradient-to-b from-[#1a1a1a] to-[#0f0f0f]">
+                {/* Chat Header */}
+                <div className="px-6 py-4 bg-[#252525]/80 border-b border-[#404040] flex items-center justify-between z-10">
+                    <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 rounded-full bg-[#2d2d2d] border border-[#FFD700]/30 flex items-center justify-center">
+                            <Logo className="w-6 h-6" />
                         </div>
-
-                        <div className="space-y-4">
-                            {[
-                                { name: "amplifier", label: "Amplificador", placeholder: "Marantz 2270..." },
-                                { name: "turntable", label: "Tornamesa", placeholder: "Technics SL-1200..." },
-                                { name: "speakers", label: "Parlantes", placeholder: "JBL L100..." },
-                                { name: "cables", label: "Cables", placeholder: "Cobre OFC..." },
-                            ].map((field) => (
-                                <div key={field.name} className="space-y-1.5">
-                                    <label className="text-xs font-bold text-netflix-muted uppercase tracking-wider">{field.label}</label>
-                                    <input
-                                        name={field.name}
-                                        value={(selections as any)[field.name]}
-                                        onChange={handleInputChange}
-                                        placeholder={field.placeholder}
-                                        className="w-full bg-netflix-hover border border-netflix-border/50 rounded px-4 py-2.5 text-sm text-white focus:outline-none focus:border-white transition-all"
-                                    />
-                                </div>
-                            ))}
+                        <div>
+                            <h4 className="text-sm font-bold text-white">Experto Fónica</h4>
+                            <div className="flex items-center space-x-1.5">
+                                <span className="text-[10px] text-[#FFD700] font-bold uppercase tracking-widest">IA Generativa Hi-Fi</span>
+                            </div>
                         </div>
-
+                    </div>
+                    <div className="flex items-center space-x-4">
+                        {!user?.isPremium && (
+                            <span className="text-[10px] font-bold text-netflix-muted uppercase tracking-tighter">
+                                {msgCount}/15 consultas hoy
+                            </span>
+                        )}
                         <button
-                            onClick={generateAdvisory}
-                            disabled={isGenerating || !selections.amplifier}
-                            className="w-full py-4 bg-white text-black rounded font-bold uppercase text-xs tracking-widest hover:bg-white/80 transition-all flex items-center justify-center space-x-2"
+                            onClick={clearChat}
+                            className="p-2 text-netflix-muted hover:text-white transition-colors"
+                            title="Limpiar Conversación"
                         >
-                            {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
-                            <span>Generar Reporte Técnico</span>
+                            <RotateCcw className="w-4 h-4" />
                         </button>
                     </div>
                 </div>
 
-                {/* Right Column: Chat Interface */}
-                <div className="lg:col-span-8 flex flex-col h-[700px] bg-netflix-dark rounded-lg border border-netflix-border/50 overflow-hidden relative">
-                    {/* Chat Header */}
-                    <div className="p-4 bg-netflix-hover/40 border-b border-netflix-border flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 rounded-full bg-netflix-red flex items-center justify-center">
-                                <Zap className="w-5 h-5 text-white" />
-                            </div>
-                            <div>
-                                <h4 className="text-sm font-bold text-white">Experto Audiófilo Fónica</h4>
-                                <div className="flex items-center space-x-1.5">
-                                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-                                    <span className="text-[10px] text-netflix-muted font-bold uppercase tracking-widest leading-none">En Línea</span>
-                                </div>
-                            </div>
-                        </div>
-                        <button
-                            onClick={clearChat}
-                            className="text-xs text-netflix-muted hover:text-white transition-colors flex items-center space-x-1"
-                        >
-                            <RotateCcw className="w-3 h-3" />
-                            <span>Limpiar Chat</span>
-                        </button>
-                    </div>
-
-                    {/* Messages Area */}
-                    <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-hide bg-netflix-black/20">
-                        {chatMessages.map((msg, i) => (
-                            <div key={i} className={clsx(
-                                "flex flex-col space-y-1 max-w-[85%]",
-                                msg.role === "user" ? "ml-auto items-end" : "mr-auto items-start"
+                {/* Messages Area */}
+                <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 scrollbar-hide">
+                    {chatMessages.map((msg, i) => (
+                        <div key={i} className={clsx(
+                            "flex flex-col space-y-2 max-w-[85%] md:max-w-[70%]",
+                            msg.role === "user" ? "ml-auto items-end" : "mr-auto items-start"
+                        )}>
+                            <div className={clsx(
+                                "px-5 py-4 rounded-2xl text-sm md:text-base leading-relaxed whitespace-pre-wrap shadow-lg",
+                                msg.role === "user"
+                                    ? "bg-[#3a3a3a] text-white rounded-tr-none"
+                                    : "bg-[#2d2d2d] text-white border-l-[4px] border-l-[#FFD700] rounded-tl-none"
                             )}>
-                                <div className={clsx(
-                                    "px-4 py-3 rounded-lg text-sm leading-relaxed",
-                                    msg.role === "user"
-                                        ? "bg-netflix-hover text-white rounded-tr-none"
-                                        : "bg-netflix-dark border border-netflix-border/50 border-l-[3px] border-l-netflix-red text-white/90 rounded-tl-none"
-                                )}>
-                                    {msg.content}
-                                </div>
-                                <span className="text-[9px] text-netflix-muted font-bold uppercase tracking-widest px-1">
-                                    {msg.role === "user" ? "Tú" : "Experto"}
+                                {msg.content}
+                            </div>
+                            <div className="flex items-center space-x-2 px-2">
+                                <span className="text-[10px] text-netflix-muted font-bold uppercase tracking-widest">
+                                    {(msg as any).timestamp}
+                                </span>
+                                <span className="text-[10px] text-[#FFD700]/40 font-bold uppercase tracking-widest">•</span>
+                                <span className="text-[10px] text-netflix-muted font-bold uppercase tracking-widest">
+                                    {msg.role === "user" ? (user?.name || "Tú") : "Mentor Experto"}
                                 </span>
                             </div>
-                        ))}
-                        {isChatLoading && (
-                            <div className="flex flex-col items-start mr-auto space-y-2">
-                                <div className="flex space-x-1">
-                                    <div className="w-1.5 h-1.5 bg-netflix-red rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                                    <div className="w-1.5 h-1.5 bg-netflix-red rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                                    <div className="w-1.5 h-1.5 bg-netflix-red rounded-full animate-bounce"></div>
-                                </div>
-                                <span className="text-[9px] text-netflix-muted font-bold uppercase tracking-widest">Analizando...</span>
+                        </div>
+                    ))}
+                    {isChatLoading && (
+                        <div className="flex flex-col items-start mr-auto space-y-3 px-2">
+                            <div className="flex space-x-2">
+                                <div className="w-2 h-2 bg-[#FFD700] rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                                <div className="w-2 h-2 bg-[#FFD700] rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                                <div className="w-2 h-2 bg-[#FFD700] rounded-full animate-bounce"></div>
                             </div>
-                        )}
-                        <div ref={chatEndRef} />
-                    </div>
+                            <span className="text-[10px] text-[#FFD700] font-bold uppercase tracking-[0.2em] animate-pulse">El experto está escribiendo...</span>
+                        </div>
+                    )}
+                    <div ref={chatEndRef} />
+                </div>
 
-                    {/* Input Area */}
-                    <div className="p-6 space-y-4 bg-netflix-hover/20">
-                        {/* Quick Suggestions */}
+                {/* Input Area */}
+                <div className="p-4 md:p-6 space-y-4 bg-[#1a1a1a]/80 backdrop-blur-md border-t border-[#404040]">
+                    {/* Quick Suggestions */}
+                    {chatMessages.length < 3 && (
                         <div className="flex space-x-2 overflow-x-auto pb-2 scrollbar-hide">
                             {suggestions.map((s) => (
                                 <button
                                     key={s}
                                     onClick={() => sendMessage(s)}
-                                    className="whitespace-nowrap px-3 py-1.5 bg-netflix-dark border border-netflix-border/50 rounded-full text-[10px] font-bold text-netflix-text hover:bg-white hover:text-black transition-all"
+                                    className="whitespace-nowrap px-4 py-2 bg-[#2d2d2d] border border-[#404040] rounded-full text-[11px] font-bold text-white hover:border-[#FFD700] hover:text-[#FFD700] transition-all"
                                 >
                                     {s}
                                 </button>
                             ))}
                         </div>
+                    )}
 
-                        <div className="relative">
-                            <input
+                    <div className="relative flex items-end space-x-2">
+                        <div className="flex-1 relative">
+                            <textarea
                                 value={currentMessage}
                                 onChange={(e) => setCurrentMessage(e.target.value)}
-                                onKeyPress={(e) => e.key === "Enter" && sendMessage()}
-                                placeholder="Haz una consulta técnica sobre tu equipo..."
-                                className="w-full bg-netflix-hover border border-netflix-border rounded px-4 py-4 pr-14 text-sm text-white focus:outline-none focus:border-white transition-all placeholder:text-netflix-muted"
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter" && !e.shiftKey) {
+                                        e.preventDefault();
+                                        sendMessage();
+                                    }
+                                }}
+                                rows={1}
+                                placeholder="Escribe tu pregunta profesional..."
+                                className="w-full bg-[#252525] border border-[#404040] rounded-xl px-4 py-4 pr-14 text-sm md:text-base text-white focus:outline-none focus:border-[#FFD700] transition-all placeholder:text-gray-500 resize-none min-h-[56px] max-h-32"
                             />
                             <button
                                 onClick={() => sendMessage()}
                                 disabled={!currentMessage.trim() || isChatLoading}
-                                className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded bg-netflix-red flex items-center justify-center text-white hover:bg-netflix-red/90 transition-all disabled:opacity-50"
+                                className={clsx(
+                                    "absolute right-2 bottom-2 w-10 h-10 rounded-lg flex items-center justify-center transition-all disabled:opacity-30",
+                                    currentMessage.trim() ? "bg-[#FFD700] text-black shadow-[0_0_15px_rgba(255,215,0,0.3)]" : "bg-[#3a3a3a] text-gray-500"
+                                )}
                             >
-                                <Send className="w-5 h-5" />
+                                {isChatLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
-
-            {/* Report Display (Conditional) */}
-            {report && (
-                <div className="pt-20 animate-in slide-in-from-bottom-10 duration-700">
-                    <div ref={reportRef} className="bg-netflix-dark border border-netflix-border rounded-lg p-10 md:p-20 space-y-12">
-                        <div className="text-center space-y-4">
-                            <Logo className="w-20 h-20 mx-auto" />
-                            <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight">{report.title}</h2>
-                            <p className="text-xl text-netflix-muted italic max-w-2xl mx-auto">{report.intro}</p>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 pt-10 border-t border-netflix-border">
-                            <div className="space-y-4">
-                                <h3 className="text-premium-gold font-bold uppercase tracking-widest flex items-center space-x-2">
-                                    <Sparkles className="w-4 h-4" />
-                                    <span>Análisis de Sinergia</span>
-                                </h3>
-                                <p className="text-white/90 leading-relaxed">{report.synergyDetails}</p>
-                            </div>
-                            <div className="space-y-4">
-                                <h3 className="text-premium-gold font-bold uppercase tracking-widest flex items-center space-x-2">
-                                    <ShieldCheck className="w-4 h-4" />
-                                    <span>Tips del Experto</span>
-                                </h3>
-                                <ul className="space-y-2">
-                                    {report.expertTips.map((tip: string, i: number) => (
-                                        <li key={i} className="flex items-start space-x-3 text-netflix-muted">
-                                            <div className="w-1.5 h-1.5 bg-netflix-red rounded-full mt-2 shrink-0" />
-                                            <span>{tip}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div className="pt-10 border-t border-netflix-border flex justify-center">
-                            <button onClick={downloadPDF} className="btn-premium">
-                                Descargar Reporte PDF
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }
