@@ -9,33 +9,36 @@ export default function PremiumModule({ onUpgrade }: { onUpgrade: () => void }) 
     if (user?.isPremium) return null;
 
     return (
-        <div className="glass-gold p-8 rounded-[32px] border border-bronze/30 space-y-6 bg-gradient-to-br from-bronze/10 to-transparent">
-            <div className="flex items-center justify-between">
-                <div className="p-3 bg-bronze rounded-xl shadow-lg shadow-bronze/20">
-                    <Crown className="w-6 h-6 text-obsidian" />
+        <div className="bg-netflix-dark p-8 rounded-lg border border-netflix-border/50 space-y-6 relative overflow-hidden group">
+            {/* Background Accent */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-netflix-red/5 blur-3xl -mr-16 -mt-16 group-hover:bg-netflix-red/10 transition-colors duration-700"></div>
+
+            <div className="flex items-center justify-between relative z-10">
+                <div className="p-3 bg-netflix-red rounded-lg shadow-lg shadow-netflix-red/20">
+                    <Crown className="w-6 h-6 text-white" />
                 </div>
                 <div className="text-right">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-bronze/60">Suscripción Anual</p>
-                    <p className="text-2xl font-serif font-bold text-white">$3<span className="text-sm font-normal text-bronze/40 underline decoration-bronze/20">/mes</span></p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-netflix-muted">Suscripción Maestro</p>
+                    <p className="text-2xl font-bold text-white leading-none mt-1">$3<span className="text-sm font-normal text-netflix-muted">/mes</span></p>
                 </div>
             </div>
 
-            <div className="space-y-4">
-                <h3 className="text-xl font-serif font-bold text-white">Audiofilo <span className="text-bronze italic">Maestro</span></h3>
-                <p className="text-xs text-bronze/60 leading-relaxed font-display">
-                    Desbloquea el poder total de nuestra IA con análisis de circuitos ilimitados y exportación de fichas HD personalizadas.
+            <div className="space-y-4 relative z-10">
+                <h3 className="text-xl font-bold text-white">Fónica <span className="text-netflix-red">Maestro</span></h3>
+                <p className="text-xs text-netflix-muted leading-relaxed">
+                    Desbloquea asesoría técnica ilimitada con Gemini 2.0, análisis de esquemas y exportación de reportes HD sin límites.
                 </p>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-3 relative z-10">
                 {[
-                    "Escaneos de hardware ilimitados",
-                    "Chat con Experto prioritario",
-                    "Exportación PDF sin marca de agua",
-                    "Acceso anticipado a nuevos modelos"
+                    "Consultas técnicas ilimitadas",
+                    "Análisis de sinergia avanzado",
+                    "Exportación PDF Premium",
+                    "Sin límites de mensajes/día"
                 ].map(item => (
-                    <div key={item} className="flex items-center space-x-3 text-[10px] font-bold uppercase tracking-wider text-white/60">
-                        <Check className="w-3 h-3 text-bronze" />
+                    <div key={item} className="flex items-center space-x-3 text-[10px] font-bold uppercase tracking-wider text-netflix-text/80">
+                        <Check className="w-3 h-3 text-netflix-red" />
                         <span>{item}</span>
                     </div>
                 ))}
@@ -43,9 +46,9 @@ export default function PremiumModule({ onUpgrade }: { onUpgrade: () => void }) 
 
             <button
                 onClick={onUpgrade}
-                className="w-full py-4 bg-bronze text-obsidian rounded-xl font-black uppercase text-[10px] tracking-[0.2em] hover:bg-white hover:scale-[1.02] transition-all shadow-xl shadow-bronze/10"
+                className="w-full py-4 bg-white text-black rounded font-bold uppercase text-xs tracking-widest hover:bg-white/90 transition-all relative z-10"
             >
-                Subir a Premium
+                Actualizar Ahora
             </button>
         </div>
     );

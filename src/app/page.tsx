@@ -7,10 +7,11 @@ import SystemConnect from "@/components/SystemConnect";
 import AuthModal from "@/components/auth/AuthModal";
 import SettingsModal from "@/components/SettingsModal";
 import PremiumModule from "@/components/PremiumModule";
+import Archive from "@/components/Archive";
 import Logo from "@/components/Logo";
 import { useUser } from "@/context/UserContext";
 import { mockEquipmentData } from "@/lib/mockData";
-import { AlertCircle, ShieldCheck, Zap, Cable, Settings, Crown, User as UserIcon } from "lucide-react";
+import { AlertCircle, ShieldCheck, Zap, Cable, Settings, Crown, User as UserIcon, MessageCircle, Archive as ArchiveIcon } from "lucide-react";
 import { clsx } from "clsx";
 
 export default function Home() {
@@ -18,7 +19,7 @@ export default function Home() {
     const [analysisData, setAnalysisData] = useState<any>(null);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
-    const [activeTab, setActiveTab] = useState<"advisor" | "connect">("advisor");
+    const [activeTab, setActiveTab] = useState<"advisor" | "connect" | "archive">("advisor");
 
     // UI States
     const [showAuth, setShowAuth] = useState(false);
@@ -66,136 +67,173 @@ export default function Home() {
     };
 
     return (
-        <main className="min-h-screen bg-obsidian selection:bg-bronze selection:text-obsidian text-bronze/80">
-            {/* Global Navigation */}
-            <nav className="fixed top-0 left-0 right-0 z-[100] bg-obsidian/80 backdrop-blur-xl border-b border-white/5">
-                <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
+        <main className="min-h-screen bg-netflix-black text-white selection:bg-netflix-red">
+            {/* Global Navigation - Netflix Style */}
+            <nav className="fixed top-0 left-0 right-0 z-[100] netflix-gradient h-20 transition-all duration-300">
+                <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
                     <div
-                        className="flex items-center space-x-4 cursor-pointer group"
+                        className="flex items-center space-x-8 cursor-pointer group"
                         onClick={() => {
                             setActiveTab("advisor");
                             setAnalysisData(null);
                         }}
                     >
-                        <Logo className="w-12 h-12" />
                         <div className="flex flex-col">
-                            <span className="text-2xl font-serif font-black text-white tracking-tighter leading-none">Fónica</span>
-                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-bronze/40 group-hover:text-bronze transition-colors">Audiofilo Experiencia</span>
+                            <span className="text-3xl font-black text-netflix-red tracking-tighter leading-none uppercase">Fónica</span>
                         </div>
-                    </div>
 
-                    <div className="flex items-center space-x-12">
-                        <div className="hidden md:flex items-center space-x-8">
+                        <div className="hidden md:flex items-center space-x-6">
                             {[
                                 { id: "advisor", label: "Identificar", icon: Zap },
-                                { id: "connect", label: "Asesoría", icon: Cable },
+                                { id: "connect", label: "Asesoría", icon: MessageCircle },
+                                { id: "archive", label: "Archivo", icon: ArchiveIcon },
                             ].map((item: any) => (
                                 <button
                                     key={item.id}
                                     onClick={() => setActiveTab(item.id)}
                                     className={clsx(
-                                        "flex items-center space-x-2 text-[10px] font-black uppercase tracking-[0.2em] transition-all",
-                                        activeTab === item.id ? "text-bronze scale-110" : "text-white/20 hover:text-white"
+                                        "text-sm font-medium transition-all hover:text-netflix-muted",
+                                        activeTab === item.id ? "text-white font-bold" : "text-white/80"
                                     )}
                                 >
-                                    <item.icon className="w-3.5 h-3.5" />
                                     <span>{item.label}</span>
                                 </button>
                             ))}
                         </div>
+                    </div>
 
-                        <div className="flex items-center space-x-6 pl-8 border-l border-white/5">
-                            {user ? (
-                                <div className="flex items-center space-x-4">
-                                    <div className="hidden lg:block text-right">
-                                        <p className="text-[9px] font-black uppercase tracking-widest text-bronze/30">Bienvenido de vuelta</p>
-                                        <p className="text-sm font-serif font-bold text-white">{user.name}</p>
-                                    </div>
-                                    <button
-                                        onClick={() => setShowSettings(true)}
-                                        className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:border-bronze/40 transition-all group"
-                                    >
-                                        <Settings className="w-4 h-4 text-white/40 group-hover:text-bronze group-hover:rotate-90 transition-all duration-500" />
-                                    </button>
-                                </div>
-                            ) : (
+                    <div className="flex items-center space-x-6">
+                        {user ? (
+                            <div className="flex items-center space-x-4">
                                 <button
-                                    onClick={() => setShowAuth(true)}
-                                    className="px-6 py-2.5 bg-bronze/10 border border-bronze/20 text-bronze rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-bronze hover:text-obsidian transition-all"
+                                    onClick={() => setShowSettings(true)}
+                                    className="flex items-center space-x-2 text-sm text-white hover:text-netflix-muted transition-colors"
                                 >
-                                    Inscribirse
+                                    <span className="hidden sm:inline">{user.name}</span>
+                                    <div className="w-8 h-8 rounded bg-netflix-red flex items-center justify-center">
+                                        <UserIcon className="w-5 h-5" />
+                                    </div>
                                 </button>
-                            )}
-                        </div>
+                            </div>
+                        ) : (
+                            <button
+                                onClick={() => setShowAuth(true)}
+                                className="px-4 py-1.5 bg-netflix-red text-white text-sm font-bold rounded hover:bg-netflix-red/90 transition-all"
+                            >
+                                Inscribirse
+                            </button>
+                        )}
                     </div>
                 </div>
             </nav>
 
             {!analysisData ? (
-                <div className="max-w-7xl mx-auto px-6 pt-40 pb-20">
+                <div className="relative">
                     {activeTab === "advisor" && (
-                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-20 items-start">
-                            {/* Left: Hero & Content */}
-                            <div className="lg:col-span-7 space-y-12">
-                                <header className="space-y-8 animate-in fade-in slide-in-from-left-10 duration-1000">
-                                    <div className="inline-flex items-center space-x-3 px-4 py-1.5 bg-bronze/10 border border-bronze/20 rounded-full text-bronze text-[10px] font-black uppercase tracking-[0.3em]">
-                                        <Crown className="w-3 h-3 fill-bronze animate-pulse" />
-                                        <span>Inteligencia artificial para Audiofilos</span>
-                                    </div>
-                                    <h1 className="text-6xl font-serif font-bold tracking-tighter leading-[0.85] text-white">
-                                        Fónica
-                                    </h1>
-                                    <p className="text-xl text-bronze/50 font-display leading-relaxed max-w-xl">
-                                        Una IA especializada para audiofilos que te conecta con el mundo del audio.
-                                    </p>
-                                </header>
+                        <div className="flex flex-col">
+                            {/* Hero Section - Netflix Style */}
+                            <div className="relative h-[80vh] w-full overflow-hidden flex items-end">
+                                {/* Background Image placeholder - Premium Hi-Fi */}
+                                <div className="absolute inset-0 z-0">
+                                    <div className="absolute inset-0 bg-gradient-to-t from-netflix-black via-netflix-black/40 to-transparent z-10" />
+                                    <div className="absolute inset-0 bg-gradient-to-r from-netflix-black via-netflix-black/20 to-transparent z-10" />
+                                    <img
+                                        src="https://images.unsplash.com/photo-1545453303-122997921159?q=80&w=2000&auto=format&fit=crop"
+                                        alt="Hi-Fi Equipment"
+                                        className="w-full h-full object-cover opacity-60"
+                                    />
+                                </div>
 
-                                <div className="space-y-10 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300">
-                                    <div className="space-y-4">
-                                        <h2 className="text-3xl font-serif font-bold text-white">Digitaliza tus Circuitos</h2>
-                                        <p className="text-bronze/40 text-sm max-w-lg leading-relaxed">
-                                            Cargue una fotografía nítida del chasis o panel frontal. Nuestra IA Maestro Senior identificará firma sonora, topología y valor de mercado.
-                                        </p>
+                                <div className="relative z-20 max-w-7xl mx-auto px-6 pb-20 w-full space-y-6">
+                                    <h1 className="text-5xl md:text-7xl font-bold tracking-tight max-w-3xl leading-tight">
+                                        Fónica - Tu Guía <span className="text-netflix-red">Hi-Fi</span>
+                                    </h1>
+                                    <p className="text-xl md:text-2xl text-netflix-text max-w-2xl font-medium">
+                                        Experiencia audiófila definitiva. Identifica, optimiza y descubre la verdadera alma de tu sistema de sonido.
+                                    </p>
+                                    <div className="flex space-x-4 pt-4">
+                                        <button
+                                            onClick={() => document.getElementById('upload-section')?.scrollIntoView({ behavior: 'smooth' })}
+                                            className="px-8 py-3 bg-white text-black font-bold rounded flex items-center space-x-2 hover:bg-white/80 transition-all"
+                                        >
+                                            <Zap className="fill-black" />
+                                            <span>Comenzar Análisis Gratis</span>
+                                        </button>
+                                        <button
+                                            onClick={handleDemo}
+                                            className="px-8 py-3 bg-netflix-hover/40 text-white font-bold rounded flex items-center space-x-2 border border-white/20 hover:bg-netflix-hover transition-all"
+                                        >
+                                            <div className="w-6 h-6 rounded-full border-2 border-white flex items-center justify-center">
+                                                <div className="w-0 h-0 border-t-4 border-t-transparent border-l-8 border-l-white border-b-4 border-b-transparent ml-1" />
+                                            </div>
+                                            <span>Ver Demo</span>
+                                        </button>
                                     </div>
-                                    <FileUpload onUpload={handleUpload} isAnalyzing={isAnalyzing} />
                                 </div>
                             </div>
 
-                            {/* Right: Premium & Social */}
-                            <aside className="lg:col-span-5 space-y-10 animate-in fade-in slide-in-from-right-10 duration-1000 delay-500">
-                                <PremiumModule onUpgrade={() => setShowPremium(true)} />
-
-                                <div className="glass p-8 rounded-[32px] border border-white/5 space-y-6">
-                                    <div className="space-y-2">
-                                        <h3 className="text-bronze font-black uppercase text-[10px] tracking-[0.4em]">Acceso Directo</h3>
-                                        <p className="text-white text-2xl font-serif font-bold">Laboratorio Técnico</p>
+                            {/* Main Content Areas in Carousels/Rows */}
+                            <div className="max-w-7xl mx-auto px-6 -mt-10 relative z-30 space-y-20 pb-20 w-full">
+                                {/* Upload/Identificar Section */}
+                                <section id="upload-section" className="space-y-6">
+                                    <h2 className="text-2xl font-bold text-white">Identificar Equipos</h2>
+                                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                                        <div className="lg:col-span-8">
+                                            <div className="glass p-8 rounded-lg space-y-6">
+                                                <p className="text-netflix-muted">
+                                                    Sube una foto de tu equipo para obtener un análisis técnico detallado,
+                                                    incluyendo su firma sonora y valor de mercado.
+                                                </p>
+                                                <FileUpload onUpload={handleUpload} isAnalyzing={isAnalyzing} />
+                                            </div>
+                                        </div>
+                                        <div className="lg:col-span-4">
+                                            <PremiumModule onUpgrade={() => setShowPremium(true)} />
+                                        </div>
                                     </div>
-                                    <p className="text-bronze/40 text-xs leading-relaxed">
-                                        Explore el análisis de referencia del **Marantz Model 2270**. Diagramas, componentes críticos y recomendaciones de sinergia de autor.
-                                    </p>
-                                    <button
-                                        onClick={handleDemo}
-                                        className="w-full py-5 border border-bronze/20 text-bronze rounded-2xl flex items-center justify-center space-x-3 text-[10px] font-black uppercase tracking-[0.3em] hover:bg-bronze hover:text-obsidian transition-all group"
-                                    >
-                                        <span>Explorar Análisis de Referencia</span>
-                                        <ShieldCheck className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                                    </button>
-                                </div>
-                            </aside>
+                                </section>
+
+                                {/* Featured Row / Carousel Placeholder */}
+                                <section className="space-y-6">
+                                    <h2 className="text-2xl font-bold text-white">Laboratorio Técnico</h2>
+                                    <div className="flex space-x-4 overflow-x-auto pb-6 scrollbar-hide">
+                                        {[1, 2, 3, 4].map((i) => (
+                                            <div key={i} className="card-netflix min-w-[300px] h-[170px] bg-netflix-dark border border-netflix-border/50 relative group">
+                                                <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent z-10" />
+                                                <div className="absolute inset-x-4 bottom-4 z-20">
+                                                    <p className="text-premium-gold font-bold text-sm">RECOMENDADO</p>
+                                                    <p className="text-white font-bold text-lg">Marantz Model 2270</p>
+                                                    <div className="flex items-center space-x-2 text-xs text-netflix-muted opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <span>Análisis Profundo</span>
+                                                        <span>•</span>
+                                                        <span>Referencia Hi-Fi</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </section>
+                            </div>
                         </div>
                     )}
 
                     {activeTab === "connect" && <SystemConnect />}
+                    {activeTab === "archive" && <Archive />}
 
-                    <footer className="mt-40 pt-12 border-t border-white/5 text-center space-y-4">
-                        <Logo className="w-8 h-8 mx-auto grayscale opacity-20" />
-                        <p className="text-[10px] font-mono text-bronze/20 uppercase tracking-[0.6em]">
-                            Sistemas de Audio Avanzados // v2.0.0 Maestro Premium
+                    <footer className="mt-40 pb-20 border-t border-netflix-border/50 text-center space-y-6 pt-12">
+                        <div className="flex justify-center space-x-8 text-netflix-muted text-sm font-medium">
+                            <a href="#" className="hover:text-white transition-colors">Audiofilo Pro</a>
+                            <a href="#" className="hover:text-white transition-colors">Soporte Técnico</a>
+                            <a href="#" className="hover:text-white transition-colors">Privacidad</a>
+                            <a href="#" className="hover:text-white transition-colors">Términos de Uso</a>
+                        </div>
+                        <p className="text-xs font-medium text-netflix-muted uppercase tracking-[0.4em] opacity-40">
+                            Fónica Systems // © 2026 EXPERIENCIA AUDIÓFILA PREMIUM
                         </p>
                     </footer>
                 </div>
             ) : (
-                <div className="py-24 px-6 md:px-12 bg-obsidian/50 min-h-screen">
+                <div className="pt-24 px-6 md:px-12 bg-netflix-black min-h-screen">
                     <Dashboard data={analysisData} onReset={() => {
                         setAnalysisData(null);
                         setErrorMsg(null);
@@ -203,32 +241,46 @@ export default function Home() {
                 </div>
             )}
 
-            {/* Modals */}
+            {/* Modals - Netflix style */}
             {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}
             {showSettings && <SettingsModal onClose={() => setShowSettings(false)} onOpenPremium={() => setShowPremium(true)} />}
 
-            {/* Simple Premium Upgrade Simulation */}
+            {/* Premium Upgrade Modal */}
             {showPremium && (
                 <div className="fixed inset-0 z-[300] flex items-center justify-center p-4">
-                    <div className="absolute inset-0 bg-obsidian/95 backdrop-blur-3xl" onClick={() => setShowPremium(false)}></div>
-                    <div className="relative bg-obsidian border border-bronze/30 p-12 rounded-[40px] max-w-md w-full text-center space-y-8 animate-in zoom-in-95 duration-500">
-                        <div className="w-20 h-20 bg-bronze rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-bronze/20">
-                            <Crown className="w-10 h-10 text-obsidian" />
+                    <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" onClick={() => setShowPremium(false)}></div>
+                    <div className="relative bg-netflix-dark border border-netflix-border p-12 rounded-lg max-w-md w-full text-center space-y-8 animate-in zoom-in-95 duration-300">
+                        <div className="w-20 h-20 bg-netflix-red rounded-lg flex items-center justify-center mx-auto shadow-2xl">
+                            <Crown className="w-10 h-10 text-white" />
                         </div>
                         <div className="space-y-4">
-                            <h2 className="text-4xl font-serif font-bold text-white">Suscripción Maestro</h2>
-                            <p className="text-bronze/60 font-display">Confirmar suscripción mensual por <span className="text-white font-bold">$3 USD</span>.</p>
+                            <h2 className="text-4xl font-bold text-white">Suscripción Maestro</h2>
+                            <p className="text-netflix-muted text-lg">Confirmar suscripción mensual para acceso ilimitado a la IA por <span className="text-white font-bold">$3 USD</span>.</p>
+                            <div className="space-y-2 text-left pt-4">
+                                <div className="flex items-center space-x-2 text-sm text-white">
+                                    <div className="w-1.5 h-1.5 bg-premium-gold rounded-full" />
+                                    <span>Consultas ilimitadas con Gemini 2.0 Flash</span>
+                                </div>
+                                <div className="flex items-center space-x-2 text-sm text-white">
+                                    <div className="w-1.5 h-1.5 bg-premium-gold rounded-full" />
+                                    <span>Análisis profundo de topologías</span>
+                                </div>
+                                <div className="flex items-center space-x-2 text-sm text-white">
+                                    <div className="w-1.5 h-1.5 bg-premium-gold rounded-full" />
+                                    <span>Tips VIP de sinergia y cables</span>
+                                </div>
+                            </div>
                         </div>
                         <button
                             onClick={() => {
                                 updateProfile({ isPremium: true });
                                 setShowPremium(false);
                             }}
-                            className="w-full py-5 bg-bronze text-obsidian rounded-2xl font-black uppercase text-xs tracking-[0.3em] hover:bg-white hover:scale-[1.02] transition-all"
+                            className="w-full py-4 bg-netflix-red text-white rounded font-bold uppercase text-sm tracking-widest hover:bg-netflix-red/90 transition-all"
                         >
                             Confirmar y Activar
                         </button>
-                        <button onClick={() => setShowPremium(false)} className="text-[10px] font-black uppercase tracking-widest text-bronze/30 hover:text-bronze transition-colors">Cancelar</button>
+                        <button onClick={() => setShowPremium(false)} className="text-xs font-bold uppercase tracking-widest text-netflix-muted hover:text-white transition-colors">Cancelar</button>
                     </div>
                 </div>
             )}

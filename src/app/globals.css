@@ -12,10 +12,7 @@
 
 @layer base {
   body {
-    @apply antialiased bg-[#0e1113] text-analog-gold selection:bg-analog-gold selection:text-gunmetal-grey;
-    background-image:
-      radial-gradient(at 0% 0%, rgba(212, 175, 55, 0.05) 0px, transparent 50%),
-      radial-gradient(at 100% 100%, rgba(212, 175, 55, 0.02) 0px, transparent 50%);
+    @apply antialiased bg-netflix-black text-netflix-text selection:bg-netflix-red selection:text-white;
     min-height: 100vh;
   }
 
@@ -23,62 +20,64 @@
   h2,
   h3,
   h4 {
-    @apply tracking-tight font-display;
+    @apply tracking-tight font-display font-bold;
   }
 }
 
 @layer components {
   .glass {
-    @apply bg-white/[0.03] backdrop-blur-xl border border-white/[0.05] shadow-2xl;
+    @apply bg-black/60 backdrop-blur-xl border border-netflix-border/30 shadow-2xl;
   }
 
   .glass-gold {
-    @apply bg-analog-gold/[0.03] backdrop-blur-xl border border-analog-gold/10 shadow-2xl shadow-analog-gold/5;
+    @apply bg-premium-gold/5 backdrop-blur-xl border border-premium-gold/20 shadow-2xl shadow-premium-gold/5;
+  }
+
+  .btn-netflix {
+    @apply px-8 py-2 bg-netflix-red text-white font-bold rounded flex items-center justify-center transition-all duration-300 hover:bg-[#ff1e1e] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
   .btn-premium {
-    @apply px-8 py-4 bg-analog-gold text-gunmetal-grey font-black uppercase tracking-[0.2em] text-[10px] rounded-2xl transition-all duration-500 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
-    box-shadow: 0 0 0 rgba(212, 175, 55, 0);
+    @apply px-8 py-3 bg-premium-gold text-netflix-black font-black uppercase tracking-[0.2em] text-[10px] rounded transition-all duration-300 active:scale-95 hover:bg-white hover:shadow-[0_0_20px_rgba(255,215,0,0.4)];
   }
 
-  .btn-premium:hover {
-    @apply bg-white scale-[1.02];
-    box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+  .input-netflix {
+    @apply bg-netflix-hover border border-netflix-border text-white px-4 py-3 rounded focus:outline-none focus:border-white transition-all placeholder:text-netflix-muted;
   }
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar (Netflix style) */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0e1113;
+  background: #141414;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(212, 175, 55, 0.2);
-  border-radius: 10px;
+  background: #E50914;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(212, 175, 55, 0.4);
+  background: #ff1e1e;
 }
 
 @keyframes float {
-  0% {
-    transform: translateY(0px);
-  }
-
-  50% {
-    transform: translateY(-10px);
-  }
-
-  100% {
-    transform: translateY(0px);
-  }
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
 }
 
 .animate-float {
   animation: float 6s ease-in-out infinite;
+}
+
+.netflix-gradient {
+  background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+}
+
+.card-netflix {
+  @apply transition-transform duration-300 ease-in-out hover:scale-105 hover:z-10 cursor-pointer rounded-lg overflow-hidden;
 }

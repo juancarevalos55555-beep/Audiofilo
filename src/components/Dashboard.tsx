@@ -29,7 +29,7 @@ export default function Dashboard({ data, onReset }: DashboardProps) {
         try {
             const canvas = await html2canvas(dashboardRef.current, {
                 scale: 2,
-                backgroundColor: "#0A0A0A", // Obsidian
+                backgroundColor: "#050505", // Deep Netflix Black
                 logging: false,
                 useCORS: true,
                 onclone: (clonedDoc: Document) => {
@@ -55,47 +55,48 @@ export default function Dashboard({ data, onReset }: DashboardProps) {
     };
 
     return (
-        <div ref={dashboardRef} className="max-w-7xl mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-1000 p-8 rounded-[40px] bg-obsidian/50 border border-white/5">
+        <div ref={dashboardRef} className="max-w-7xl mx-auto space-y-12 animate-in fade-in duration-1000 p-8 md:p-12 rounded-lg bg-netflix-dark border border-netflix-border/50">
             {/* Premium Header */}
-            <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-bronze/10">
-                <div className="flex items-center space-x-6">
-                    <Logo className="w-16 h-16" />
-                    <div>
+            <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-12 border-b border-netflix-border/50">
+                <div className="flex items-center space-x-8">
+                    <Logo className="w-20 h-20" />
+                    <div className="space-y-2">
                         <div className="flex items-center space-x-2">
-                            <Crown className="w-4 h-4 text-bronze animate-pulse" />
-                            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-bronze/60">Análisis Maestro de Fónica</span>
+                            <Crown className="w-5 h-5 text-netflix-red" />
+                            <span className="text-xs font-bold uppercase tracking-[0.4em] text-netflix-muted">Informe Maestro de Fónica</span>
                         </div>
-                        <h2 className="text-5xl font-serif font-bold tracking-tighter text-white">
-                            {data?.brand || "Equipo"} <span className="text-bronze italic">{data?.model || "Desconocido"}</span>
+                        <h2 className="text-5xl font-bold tracking-tight text-white uppercase">
+                            {data?.brand || "Equipo"} <span className="text-netflix-red">{data?.model || "Desconocido"}</span>
                         </h2>
-                        <div className="flex items-center space-x-3 mt-1">
-                            {user && <p className="text-bronze/40 font-display text-sm">Preparado para <span className="text-white font-bold">{user.name}</span></p>}
-                            <p className="text-bronze/20 font-mono text-xs uppercase tracking-tighter">REF: {Math.floor(Math.random() * 900000 + 100000)}</p>
+                        <div className="flex items-center space-x-4">
+                            {user && <p className="text-netflix-muted font-medium text-sm">Consultor: <span className="text-white font-bold">{user.name}</span></p>}
+                            <span className="text-netflix-border font-bold">•</span>
+                            <p className="text-netflix-muted font-bold text-xs uppercase tracking-tighter">ID ANÁLISIS: {Math.floor(Math.random() * 900000 + 100000)}</p>
                         </div>
                     </div>
                 </div>
 
-                <div className="flex items-center space-x-4 action-buttons">
+                <div className="flex items-center space-x-6 action-buttons">
                     <button
                         onClick={handleExport}
                         disabled={isExporting}
-                        className="flex items-center space-x-3 px-8 py-4 bg-bronze text-obsidian font-black uppercase text-xs tracking-widest rounded-2xl hover:bg-white transition-all transform hover:-translate-y-0.5 shadow-2xl shadow-bronze/20 disabled:opacity-50"
+                        className="flex items-center space-x-3 px-10 py-4 bg-white text-black font-bold uppercase text-xs tracking-widest rounded hover:bg-white/90 transition-all disabled:opacity-50"
                     >
                         {isExporting ? (
                             <>
                                 <Loader2 className="w-4 h-4 animate-spin" />
-                                <span>Firmando...</span>
+                                <span>Exportando...</span>
                             </>
                         ) : (
                             <>
                                 <Download className="w-4 h-4" />
-                                <span>Descargar Ficha Premium</span>
+                                <span>Reporte HD</span>
                             </>
                         )}
                     </button>
                     <button
                         onClick={onReset}
-                        className="p-4 border border-bronze/20 rounded-2xl hover:bg-bronze/10 transition-all text-bronze/60"
+                        className="p-4 bg-netflix-hover/40 border border-white/20 rounded hover:bg-netflix-hover transition-all text-white"
                         title="Nueva Consulta"
                     >
                         <RotateCcw className="w-5 h-5" />
@@ -104,31 +105,33 @@ export default function Dashboard({ data, onReset }: DashboardProps) {
             </header>
 
             {/* Main Grid: 8/4 Split */}
-            <div className="flex flex-col lg:flex-row gap-10">
-                <div className="flex-1 space-y-12">
+            <div className="flex flex-col lg:flex-row gap-12 pt-4">
+                <div className="flex-1 space-y-16">
                     {/* Executive Summary Section */}
-                    <div className="rounded-3xl overflow-hidden border border-bronze/5 bg-black/10">
+                    <div className="rounded-lg overflow-hidden border border-netflix-border/50 bg-black/20">
                         <ExecutiveSummary data={data} />
                     </div>
 
                     {/* Specs Table Section */}
-                    <div className="space-y-6">
+                    <div className="space-y-8">
                         <SpecsTable specs={data?.specs} />
                     </div>
 
                     {/* Topology Section */}
-                    <div className="space-y-6">
+                    <div className="space-y-8">
                         <InternalTopology topology={data?.topology} />
                     </div>
                 </div>
 
                 {/* Right Sidebar */}
-                <aside className="lg:w-96 space-y-10">
-                    <ExpertVoice brand={data?.brand} insights={data?.expertInsights} />
+                <aside className="lg:w-[400px] space-y-12">
+                    <div className="bg-netflix-dark/50 p-1 rounded-lg border border-netflix-border/30">
+                        <ExpertVoice brand={data?.brand} insights={data?.expertInsights} />
+                    </div>
                     <MarketComparison marketData={data?.marketData} />
 
-                    <div className="p-6 border border-bronze/5 rounded-2xl bg-black/10 italic text-[10px] text-bronze/30 text-center leading-relaxed">
-                        * Este análisis ha sido generado mediante inteligencia artificial basada en perfiles históricos de ingeniería de audio. Su fin es informativo y de preservación digital.
+                    <div className="p-8 border border-netflix-border/30 rounded-lg bg-black/20 font-bold text-[10px] text-netflix-muted uppercase tracking-widest text-center leading-loose">
+                        * LA PRECISIÓN TÉCNICA ES NUESTRA PRIORIDAD. ESTE INFORME UTILIZA DATOS VERIFICADOS DE INGENIERÍA Y ARCHIVOS HISTÓRICOS.
                     </div>
                 </aside>
             </div>
