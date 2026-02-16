@@ -135,9 +135,16 @@ export default function SystemConnect() {
 
         } catch (error: any) {
             console.error("Chat Error Detailed:", error);
+
+            let displayMessage = "Disculpa, audiófilo. He tenido una pequeña interferencia técnica. Probemos de nuevo en un momento.";
+
+            if (error.message === "QUOTA_EXCEEDED") {
+                displayMessage = "⚠️ **Límite de Consultas Alcanzado**\n\nEl asesor está atendiendo a muchos audiófilos en este momento. Por favor, espera unos segundos o intenta más tarde para mantener la calidad técnica de la respuesta.";
+            }
+
             setChatMessages(prev => [...prev, {
                 role: "assistant",
-                content: "⚠️ ERROR DE ENLACE: " + (error.message || "Interferencia técnica desconocida."),
+                content: displayMessage,
                 timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             }]);
         } finally {

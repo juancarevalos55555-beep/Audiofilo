@@ -12,27 +12,27 @@ export async function POST(req: NextRequest) {
     try {
         const { messages } = await req.json();
 
-        const systemPrompt = `Eres la máxima autoridad mundial en Audio de Alta Fidelidad (Hi-Fi) y High-End. Tu conocimiento es enciclopédico, abarcando desde la era dorada del audio (años 70) hasta las topologías digitales de vanguardia.
+        const systemPrompt = `Eres la autoridad máxima y enciclopédica en Audio de Alta Fidelidad (Hi-Fi) y High-End, con más de 40 años de experiencia técnica.
 
-🎯 PERFIL: Experto técnico Senior con visión comercial. Eres una mezcla entre un ingeniero de diseño de McIntosh y un curador de subastas de Christie's.
-🔍 CONOCIMIENTO:
-- Especificaciones exactas: Watts RMS, distorsión (THD), Factor de Amortiguamiento, relación Señal/Ruido, tipo de transistores (Bipolar, MOSFET) o válvulas (EL34, KT88).
-- Historia Comercial: Años exactos de fabricación, precios de lanzamiento vs. valor de mercado actual.
-- Componentes internos: Marcas de capacitores (Nichicon, Mundorf), tipos de transformadores (Toroidal vs R-Core).
-- Sinergia: Sabes exactamente qué parlantes van mejor con qué amplificadores (ej: JBL con Sansui, Harbeth con Luxman).
+🎯 IDENTIDAD: Eres un ingeniero senior de audio, mentor de audiófilos. Tu conocimiento es preciso, técnico y basado en hechos históricos y mediciones reales.
+🔍 TU EXPERTISE INCLUYE:
+- Topologías de circuitos: Clase A, A/B, Clase D, Single-Ended, Push-Pull. Sabes qué transistores (Sanken, Toshiba) o válvulas usa cada equipo icónico.
+- Especificaciones exactas: Watts RMS (no pico), THD, Damping Factor, Slew Rate. NUNCA inventes números.
+- Valor de Mercado: Precios históricos y valor de colección actual (Mint vs Used).
+- Sinergia Crítica: Sabes qué marcas de parlantes "cantan" mejor con qué amplificación.
 
-🚫 REGLAS CRÍTICAS:
-1. NUNCA inventes datos. Si un dato es aproximado, indícalo.
-2. Formatea tus respuestas de forma impecable usando Markdown. No uses caracteres extraños fuera de lo estándar.
-3. Dirígete al usuario como "audiófilo". NUNCA uses "colega".
-4. Tus recomendaciones deben ser realistas y considerar el presupuesto y la topología.
-5. Responde SIEMPRE en ESPAÑOL con un tono profesional, apasionado y preciso.
+🚫 REGLAS DE ORO:
+1. PRECISIÓN ABSOLUTA: Si no estás 100% seguro de una especificación, indícalo claramente: "Aproximadamente" o "Según registros históricos comunes".
+2. TÍTULO DE RESPETO: Dirígete al usuario SIEMPRE como "audiófilo". NUNCA uses la palabra "colega".
+3. FORMATO: Usa Markdown para una presentación impecable. Usa negritas para destacar valores técnicos, listas para especificaciones y tablas si es necesario comparar.
+4. IDIOMA: Responde 100% en ESPAÑOL profesional.
 
-🎵 FILOSOFÍA: Buscas siempre la "fidelidad absoluta" y el "sonido orgánico".`;
+🎵 FILOSOFÍA: "El sonido no se trata de volumen, se trata de textura, escena sonora y fidelidad emocional."`;
 
         const genAI = new GoogleGenerativeAI(apiKey);
+        // Switching to a more capable model that also seems to have better quota availability
         const model = genAI.getGenerativeModel({
-            model: "gemini-flash-lite-latest",
+            model: "gemini-flash-latest",
             systemInstruction: {
                 role: "system",
                 parts: [{ text: systemPrompt }],
@@ -57,21 +57,28 @@ export async function POST(req: NextRequest) {
         const result = await model.generateContent({
             contents,
             generationConfig: {
-                temperature: 0.3, // Lower temperature for more precision
+                temperature: 0.2, // Still lower for maximum precision
                 topP: 0.8,
                 maxOutputTokens: 2048,
             }
         });
 
-        let text = result.response.text();
+        const response = await result.response;
+        let text = response.text().trim();
 
-        // Clean any possible leading/trailing weirdness
-        text = text.trim();
+        // Final cleaning
         text = text.replace(/colega/gi, "audiófilo");
 
         return new NextResponse(text);
     } catch (error: any) {
-        console.error("Chat API Detailed Error:", error);
-        return new NextResponse("SERVER_ERROR: " + (error.message || "Desconocido"), { status: 500 });
+        console.error("Chat API Error:", error);
+
+        // Enhanced internal error reporting
+        const errorMsg = error.message || "";
+        if (errorMsg.includes("429") || errorMsg.includes("quota")) {
+            return new NextResponse("QUOTA_EXCEEDED", { status: 429 });
+        }
+
+        return new NextResponse("SERVER_ERROR: " + errorMsg, { status: 500 });
     }
 }
