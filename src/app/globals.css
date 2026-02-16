@@ -2,6 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Markdown Styles for Chat */
+.markdown-content strong {
+  color: #FFD700;
+  font-weight: 700;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  padding-left: 1.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.markdown-content li {
+  margin-bottom: 0.25rem;
+}
+
+.markdown-content p {
+  margin-bottom: 0.75rem;
+}
+
+.markdown-content p:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3 {
+  color: #FFD700;
+  font-weight: 800;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
 :root {
   --foreground-rgb: 212, 175, 55;
   --background-start-rgb: 18, 22, 25;
@@ -38,7 +74,7 @@
   }
 
   .btn-premium {
-    @apply px-8 py-3 bg-premium-gold text-netflix-black font-black uppercase tracking-[0.2em] text-[10px] rounded transition-all duration-300 active:scale-95 hover:bg-white hover:shadow-[0_0_20px_rgba(255,215,0,0.4)];
+    @apply px-8 py-3 bg-premium-gold text-netflix-black font-black uppercase tracking-[0.2em] text-[10px] rounded transition-all duration-300 active:scale-95 hover:bg-white hover:shadow-[0_0_20px_rgba(255, 215, 0, 0.4)];
   }
 
   .input-netflix {
@@ -65,9 +101,17 @@
 }
 
 @keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
 }
 
 .animate-float {
@@ -75,7 +119,7 @@
 }
 
 .netflix-gradient {
-  background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
 }
 
 .card-netflix {

@@ -7,6 +7,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { useUser } from "@/context/UserContext";
 import Logo from "./Logo";
+import ReactMarkdown from "react-markdown";
 
 export default function SystemConnect() {
     const { user } = useUser();
@@ -259,12 +260,16 @@ export default function SystemConnect() {
                                     )}
                                 >
                                     <div className={clsx(
-                                        "px-5 py-4 rounded-2xl text-sm md:text-base leading-relaxed whitespace-pre-wrap shadow-lg",
+                                        "px-5 py-4 rounded-2xl text-sm md:text-base leading-relaxed shadow-lg markdown-content",
                                         msg.role === "user"
-                                            ? "bg-[#3a3a3a] text-white rounded-tr-none"
+                                            ? "bg-[#3a3a3a] text-white rounded-tr-none whitespace-pre-wrap"
                                             : "bg-[#2d2d2d] text-white border-l-[4px] border-l-[#FFD700] rounded-tl-none"
                                     )}>
-                                        {msg.content}
+                                        {msg.role === "user" ? (
+                                            msg.content
+                                        ) : (
+                                            <ReactMarkdown>{msg.content}</ReactMarkdown>
+                                        )}
                                     </div>
                                     <div className="flex items-center space-x-2 px-2">
                                         <span className="text-[10px] text-netflix-muted font-bold uppercase tracking-widest">
