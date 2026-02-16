@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
 
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({
-            model: "gemini-1.5-flash",
+            model: "gemini-2.0-flash",
             systemInstruction: {
                 role: "system",
                 parts: [{ text: systemPrompt }],
@@ -73,6 +73,6 @@ export async function POST(req: NextRequest) {
         if (error.message?.includes("429") || error.message?.includes("quota")) {
             return new NextResponse("QUOTA_EXCEEDED", { status: 429 });
         }
-        return new NextResponse("SERVER_ERROR", { status: 500 });
+        return new NextResponse(`SERVER_ERROR: ${error.message}`, { status: 500 });
     }
 }
