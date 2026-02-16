@@ -71,9 +71,10 @@ export async function POST(req: NextRequest) {
     } catch (error: any) {
         console.error("Chat API Error:", error);
         const errorMsg = error.message || "Unknown Error";
+        const keyPrefix = apiKey ? apiKey.substring(0, 4) : "NONE";
         if (errorMsg.includes("429") || errorMsg.includes("quota")) {
             return new NextResponse("QUOTA_EXCEEDED", { status: 429 });
         }
-        return new NextResponse(`SERVER_ERROR: ${errorMsg}`, { status: 500 });
+        return new NextResponse(`SERVER_ERROR (Key: ${keyPrefix}...): ${errorMsg}`, { status: 500 });
     }
 }
