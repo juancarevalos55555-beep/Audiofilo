@@ -20,8 +20,17 @@ export default function SystemConnect() {
     useEffect(() => {
         const savedChat = localStorage.getItem("fonica_chat_history_v2");
         if (savedChat) {
-            setChatMessages(JSON.parse(savedChat));
-        } else {
+            try {
+                const parsed = JSON.parse(savedChat);
+                if (Array.isArray(parsed)) {
+                    setChatMessages(parsed);
+                }
+            } catch (e) {
+                console.error("Failed to parse chat history:", e);
+            }
+        }
+
+        if (chatMessages.length === 0) {
             const welcomeMsg = {
                 role: "assistant",
                 content: "Bienvenido a la Cámara de Audición de Fónica. 🎧\n\nSoy el **Oráculo de Fónica**, tu mentor súper-especialista en audio de alta fidelidad. Mi misión es ayudarte a alcanzar la perfección sonora en tu sistema.\n\n¿Tienes dudas sobre la sinergia de tu amplificador?, ¿necesitas optimizar la acústica de tu sala?, o tal vez buscas ese componente 'perdido' para tu cadena de audio.\n\nEscribe tu consulta y hablemos de música y técnica.",

@@ -88,7 +88,10 @@ export default function Home() {
                             ].map((item: any) => (
                                 <button
                                     key={item.id}
-                                    onClick={() => setActiveTab(item.id)}
+                                    onClick={() => {
+                                        setActiveTab(item.id);
+                                        setAnalysisData(null);
+                                    }}
                                     className={clsx(
                                         "text-sm font-medium transition-all hover:text-netflix-muted",
                                         activeTab === item.id ? "text-white font-bold" : "text-white/80"
