@@ -10,22 +10,11 @@ import Logo from "./Logo";
 
 export default function SystemConnect() {
     const { user } = useUser();
-    const [isGenerating, setIsGenerating] = useState(false);
-    const [report, setReport] = useState<any>(null);
-    const reportRef = useRef<HTMLDivElement>(null);
     const [chatMessages, setChatMessages] = useState<{ role: string, content: string }[]>([]);
     const [currentMessage, setCurrentMessage] = useState("");
     const [isChatLoading, setIsChatLoading] = useState(false);
     const chatEndRef = useRef<HTMLDivElement>(null);
     const [msgCount, setMsgCount] = useState(0);
-
-    const [selections, setSelections] = useState({
-        amplifier: "",
-        turntable: "",
-        speakers: "",
-        cables: "",
-        other: ""
-    });
 
     // Persistence and Initialize
     useEffect(() => {
@@ -35,7 +24,7 @@ export default function SystemConnect() {
         } else {
             const welcomeMsg = {
                 role: "assistant",
-                content: "¡Hola! 👋 Soy tu asesor experto en audio Hi-Fi.\n\nCon más de 35 años de experiencia en equipos analógicos y digitales, estoy aquí para ayudarte con:\n\n🔸 Identificación de equipos vintage y modernos\n🔸 Recomendaciones de componentes y sinergias\n🔸 Diagnóstico de problemas técnicos\n🔸 Configuración óptima de tu sistema\n🔸 Consejos de compra y valoración de mercado\n\n¿En qué puedo ayudarte hoy?",
+                content: "Bienvenido a la Cámara de Audición de Fónica. 🎧\n\nSoy el **Oráculo de Fónica**, tu mentor súper-especialista en audio de alta fidelidad. Mi misión es ayudarte a alcanzar la perfección sonora en tu sistema.\n\n¿Tienes dudas sobre la sinergia de tu amplificador?, ¿necesitas optimizar la acústica de tu sala?, o tal vez buscas ese componente 'perdido' para tu cadena de audio.\n\nEscribe tu consulta y hablemos de música y técnica.",
                 timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             };
             setChatMessages([welcomeMsg]);
@@ -66,7 +55,7 @@ export default function SystemConnect() {
         if (msgCount >= maxFree && !user?.isPremium) {
             setChatMessages(prev => [...prev, {
                 role: "assistant",
-                content: "Has alcanzado el límite de consultas gratuitas. Actualiza a Premium para consultas ilimitadas.",
+                content: "Has alcanzado el límite de consultas gratuitas de hoy. Actualiza a Premium para mantener una línea abierta ilimitada conmigo.",
                 timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             }]);
             return;
@@ -101,7 +90,7 @@ export default function SystemConnect() {
             console.error("Chat Error:", error);
             setChatMessages(prev => [...prev, {
                 role: "assistant",
-                content: "Disculpa, tuve un problema técnico. Intenta de nuevo.",
+                content: "Disculpa, he tenido una interferencia técnica. Probemos de nuevo.",
                 timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             }]);
         } finally {
@@ -113,7 +102,7 @@ export default function SystemConnect() {
         localStorage.removeItem("fonica_chat_history_v2");
         const welcomeMsg = {
             role: "assistant",
-            content: "¡Hola! 👋 Soy tu asesor experto en audio Hi-Fi. ¿En qué puedo ayudarte hoy?",
+            content: "Bienvenido de nuevo. ¿En qué aspecto de tu viaje audiófilo nos enfocamos ahora?",
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
         setChatMessages([welcomeMsg]);
@@ -121,20 +110,20 @@ export default function SystemConnect() {
     };
 
     const suggestions = [
-        "¿Qué amplificador me recomiendas para empezar?",
-        "Explica la diferencia entre clase A y clase AB",
-        "¿Cómo mejoro la acústica de mi sala?",
-        "¿Vale la pena un amplificador de válvulas?"
+        "¿Cuáles son los mejores altavoces para Clase A?",
+        "Explícame el factor de amortiguamiento (Damping Factor)",
+        "¿Cómo influye el VTA en la reproducción de vinilos?",
+        "Recomiéndame un DAC con sonido analógico"
     ];
 
     return (
         <div className="w-full max-w-7xl mx-auto space-y-8 animate-in fade-in duration-1000 px-4 md:px-6 pt-24 pb-12">
             <header className="max-w-4xl mx-auto text-center space-y-2">
                 <h1 className="text-3xl md:text-4xl font-bold text-white flex items-center justify-center space-x-3">
-                    <span className="text-2xl md:text-3xl">💬</span>
-                    <span>Chat con Experto Audiófilico</span>
+                    <span className="text-2xl md:text-3xl">🎙️</span>
+                    <span>Asesoría de Alta Fidelidad</span>
                 </h1>
-                <p className="text-netflix-muted font-medium">Tu asesor personal en equipos Hi-Fi • Respuestas en tiempo real</p>
+                <p className="text-netflix-muted font-medium italic">"Donde la técnica se encuentra con la música"</p>
             </header>
 
             <div className="max-w-4xl mx-auto w-full flex flex-col h-[75vh] md:h-[700px] bg-[#1a1a1a] rounded-xl border border-[#404040] overflow-hidden relative shadow-2xl bg-gradient-to-b from-[#1a1a1a] to-[#0f0f0f]">
@@ -145,9 +134,9 @@ export default function SystemConnect() {
                             <Logo className="w-6 h-6" />
                         </div>
                         <div>
-                            <h4 className="text-sm font-bold text-white">Experto Fónica</h4>
+                            <h4 className="text-sm font-bold text-white">Oráculo de Fónica</h4>
                             <div className="flex items-center space-x-1.5">
-                                <span className="text-[10px] text-[#FFD700] font-bold uppercase tracking-widest">IA Generativa Hi-Fi</span>
+                                <span className="text-[10px] text-[#FFD700] font-bold uppercase tracking-widest">Súper-Especialista de Élite</span>
                             </div>
                         </div>
                     </div>
@@ -188,7 +177,7 @@ export default function SystemConnect() {
                                 </span>
                                 <span className="text-[10px] text-[#FFD700]/40 font-bold uppercase tracking-widest">•</span>
                                 <span className="text-[10px] text-netflix-muted font-bold uppercase tracking-widest">
-                                    {msg.role === "user" ? (user?.name || "Tú") : "Mentor Experto"}
+                                    {msg.role === "user" ? (user?.name || "Tú") : "Oráculo Experto"}
                                 </span>
                             </div>
                         </div>
@@ -200,7 +189,7 @@ export default function SystemConnect() {
                                 <div className="w-2 h-2 bg-[#FFD700] rounded-full animate-bounce [animation-delay:-0.15s]"></div>
                                 <div className="w-2 h-2 bg-[#FFD700] rounded-full animate-bounce"></div>
                             </div>
-                            <span className="text-[10px] text-[#FFD700] font-bold uppercase tracking-[0.2em] animate-pulse">El experto está escribiendo...</span>
+                            <span className="text-[10px] text-[#FFD700] font-bold uppercase tracking-[0.2em] animate-pulse">Analizando circuitos...</span>
                         </div>
                     )}
                     <div ref={chatEndRef} />
@@ -235,7 +224,7 @@ export default function SystemConnect() {
                                     }
                                 }}
                                 rows={1}
-                                placeholder="Escribe tu pregunta profesional..."
+                                placeholder="Haz una consulta de nivel experto..."
                                 className="w-full bg-[#252525] border border-[#404040] rounded-xl px-4 py-4 pr-14 text-sm md:text-base text-white focus:outline-none focus:border-[#FFD700] transition-all placeholder:text-gray-500 resize-none min-h-[56px] max-h-32"
                             />
                             <button
