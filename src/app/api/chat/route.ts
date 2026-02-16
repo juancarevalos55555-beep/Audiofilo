@@ -38,7 +38,7 @@ Responde SIEMPRE en ESPAÑOL y sé el mejor mentor que un audiófilo pueda tener
 
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({
-            model: "gemini-1.5-flash",
+            model: "gemini-2.0-flash-exp",
             systemInstruction: {
                 role: "system",
                 parts: [{ text: systemPrompt }],
