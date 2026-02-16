@@ -24,7 +24,7 @@ export default function PremiumModule({ onUpgrade }: { onUpgrade: () => void }) 
             </div>
 
             <div className="space-y-4 relative z-10">
-                <h3 className="text-xl font-bold text-white">Fónica <span className="text-netflix-red">Maestro</span></h3>
+                <h3 className="text-xl font-bold text-white"><span className="text-netflix-red">Fónica</span> Maestro</h3>
                 <p className="text-xs text-netflix-muted leading-relaxed">
                     Desbloquea asesoría técnica ilimitada con Gemini 2.0, análisis de esquemas y exportación de reportes HD sin límites.
                 </p>

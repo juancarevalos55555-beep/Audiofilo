@@ -63,7 +63,9 @@ export default function Dashboard({ data, onReset }: DashboardProps) {
                     <div className="space-y-2">
                         <div className="flex items-center space-x-2">
                             <Crown className="w-5 h-5 text-netflix-red" />
-                            <span className="text-xs font-bold uppercase tracking-[0.4em] text-netflix-muted">Informe Maestro de Fónica</span>
+                            <span className="text-lg md:text-xl font-black uppercase tracking-[0.4em] text-white">
+                                Informe Maestro de <span className="text-netflix-red underline decoration-netflix-red/30 underline-offset-8">Fónica</span>
+                            </span>
                         </div>
                         <h2 className="text-5xl font-bold tracking-tight text-white uppercase">
                             {data?.brand || "Equipo"} <span className="text-netflix-red">{data?.model || "Desconocido"}</span>

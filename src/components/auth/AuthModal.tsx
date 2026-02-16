@@ -45,97 +45,107 @@ export default function AuthModal({ onClose }: { onClose: () => void }) {
 
     return (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
-            <div className="absolute inset-0 bg-obsidian/90 backdrop-blur-xl" onClick={onClose}></div>
+            <div className="absolute inset-0 bg-[#0a0a0a]/95 backdrop-blur-2xl" onClick={onClose}></div>
 
-            <div className="relative w-full max-w-lg bg-obsidian border border-bronze/20 rounded-[40px] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-500">
-                {/* Decorative Elements */}
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-bronze/50 to-transparent"></div>
+            <div className="relative w-full max-w-lg bg-[#0f0f0f] border border-[#2a2a2a] rounded-[48px] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-500">
+                {/* Decorative Top Accent */}
+                <div className="h-1.5 w-full bg-gradient-to-r from-transparent via-netflix-red/40 to-transparent"></div>
 
-                <div className="p-10 space-y-8">
+                <div className="p-12 space-y-10">
                     <div className="flex justify-between items-start">
                         <div className="space-y-2">
-                            <h2 className="text-4xl font-serif font-bold text-white tracking-tight">Bienvenido a <span className="text-bronze italic">Fónica</span></h2>
-                            <p className="text-bronze/60 text-sm font-display">Inteligencia Artificial para Audiofilos</p>
+                            <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight leading-none uppercase whitespace-nowrap">
+                                Bienvenido a <span className="text-netflix-red tracking-tighter">Fónica</span>
+                            </h2>
+                            <p className="text-white/40 text-[9px] font-bold uppercase tracking-[0.3em]">Inteligencia Artificial para Audiofilos</p>
                         </div>
-                        <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors text-white/40 hover:text-white">
-                            <X className="w-6 h-6" />
+                        <button onClick={onClose} className="p-2 bg-white/5 hover:bg-white/10 rounded-full transition-all text-white/40 hover:text-white">
+                            <X className="w-5 h-5" />
                         </button>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        <div className="space-y-4">
+                    <form onSubmit={handleSubmit} className="space-y-8">
+                        <div className="space-y-6">
                             {/* Name Input */}
-                            <div className="space-y-1.5">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-bronze/40 ml-4">Nombre Completo</label>
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 ml-5">Nombre Completo</label>
                                 <div className="relative">
-                                    <User className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-bronze/30" />
+                                    <div className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center">
+                                        <User className="w-4 h-4 text-white/20" />
+                                    </div>
                                     <input
                                         required
                                         type="text"
                                         placeholder="Tu nombre"
                                         value={formData.name}
                                         onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                        className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-14 pr-6 text-white placeholder:text-white/10 focus:outline-none focus:border-bronze/40 transition-all font-display"
+                                        className="w-full bg-[#1a1a1a] border border-white/5 rounded-3xl py-5 pl-16 pr-8 text-white placeholder:text-white/10 focus:outline-none focus:border-netflix-red/30 transition-all font-bold text-sm shadow-inner"
                                     />
                                 </div>
                             </div>
 
                             {/* Email Input */}
-                            <div className="space-y-1.5">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-bronze/40 ml-4">Tu Correo</label>
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 ml-5">Tu Correo</label>
                                 <div className="relative">
-                                    <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-bronze/30" />
+                                    <div className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center">
+                                        <Mail className="w-4 h-4 text-white/20" />
+                                    </div>
                                     <input
                                         required
                                         type="email"
                                         placeholder="email@ejemplo.com"
                                         value={formData.email}
                                         onChange={e => setFormData({ ...formData, email: e.target.value })}
-                                        className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-14 pr-6 text-white placeholder:text-white/10 focus:outline-none focus:border-bronze/40 transition-all font-display"
+                                        className="w-full bg-[#1a1a1a] border border-white/5 rounded-3xl py-5 pl-16 pr-8 text-white placeholder:text-white/10 focus:outline-none focus:border-netflix-red/30 transition-all font-bold text-sm shadow-inner"
                                     />
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 {/* Country Select */}
-                                <div className="space-y-1.5">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-bronze/40 ml-4">País</label>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 ml-5">País</label>
                                     <div className="relative">
-                                        <Globe className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-bronze/30" />
+                                        <div className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center pointer-events-none">
+                                            <Globe className="w-4 h-4 text-white/20" />
+                                        </div>
                                         <select
                                             value={formData.country}
                                             onChange={e => setFormData({ ...formData, country: e.target.value })}
-                                            className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-14 pr-6 text-white appearance-none focus:outline-none focus:border-bronze/40 transition-all font-display"
+                                            className="w-full bg-[#1a1a1a] border border-white/5 rounded-3xl py-5 pl-16 pr-8 text-white appearance-none focus:outline-none focus:border-netflix-red/30 transition-all font-bold text-sm shadow-inner cursor-pointer"
                                         >
                                             {countryCodes.map(c => (
-                                                <option key={c.country} value={c.country} className="bg-obsidian">{c.flag} {c.country}</option>
+                                                <option key={c.country} value={c.country} className="bg-[#0f0f0f]">{c.flag} {c.country}</option>
                                             ))}
                                         </select>
                                     </div>
                                 </div>
 
                                 {/* Phone Input */}
-                                <div className="space-y-1.5">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-bronze/40 ml-4">Celular</label>
-                                    <div className="flex space-x-2">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 ml-5">Celular</label>
+                                    <div className="flex space-x-3">
                                         <select
                                             value={formData.countryCode}
                                             onChange={e => setFormData({ ...formData, countryCode: e.target.value })}
-                                            className="w-20 bg-white/5 border border-white/10 rounded-2xl py-4 px-2 text-white text-xs text-center focus:outline-none focus:border-bronze/40 transition-all"
+                                            className="w-24 bg-[#1a1a1a] border border-white/5 rounded-[20px] py-2 px-2 text-white text-xs text-center focus:outline-none focus:border-netflix-red/30 transition-all font-black cursor-pointer shadow-inner"
                                         >
                                             {countryCodes.map(c => (
-                                                <option key={c.code} value={c.code} className="bg-obsidian">{c.code}</option>
+                                                <option key={c.code} value={c.code} className="bg-[#0f0f0f]">{c.code}</option>
                                             ))}
                                         </select>
                                         <div className="relative flex-1">
-                                            <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-bronze/30" />
+                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 flex items-center justify-center">
+                                                <Phone className="w-3 h-3 text-white/20" />
+                                            </div>
                                             <input
                                                 required
                                                 type="tel"
                                                 placeholder="Número"
                                                 value={formData.phone}
                                                 onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                                                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white placeholder:text-white/10 focus:outline-none focus:border-bronze/40 transition-all font-display"
+                                                className="w-full bg-[#1a1a1a] border border-white/5 rounded-[20px] py-4 pl-12 pr-4 text-white placeholder:text-white/10 focus:outline-none focus:border-netflix-red/30 transition-all font-bold text-sm shadow-inner"
                                             />
                                         </div>
                                     </div>
@@ -146,7 +156,7 @@ export default function AuthModal({ onClose }: { onClose: () => void }) {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full py-5 bg-bronze text-obsidian rounded-2xl font-black uppercase text-xs tracking-[0.3em] flex items-center justify-center space-x-3 hover:bg-white hover:shadow-2xl hover:shadow-bronze/20 transition-all transform hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full py-5 bg-netflix-red text-white rounded-[32px] font-black uppercase text-xs tracking-[0.4em] flex items-center justify-center space-x-4 hover:bg-white hover:text-black hover:shadow-[0_20px_40px_rgba(229,9,20,0.2)] transition-all transform hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed group"
                         >
                             {isLoading ? (
                                 <>
@@ -156,15 +166,15 @@ export default function AuthModal({ onClose }: { onClose: () => void }) {
                             ) : (
                                 <>
                                     <span>Comenzar Experiencia</span>
-                                    <ArrowRight className="w-5 h-5" />
+                                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                 </>
                             )}
                         </button>
                     </form>
                 </div>
 
-                <div className="p-6 bg-white/5 border-t border-white/5 text-center">
-                    <p className="text-[9px] text-bronze/30 uppercase tracking-[0.4em] font-mono">Fónica // Audiofilo Experiencia</p>
+                <div className="p-8 bg-[#141414] border-t border-white/5 text-center">
+                    <p className="text-[10px] text-white/20 font-bold uppercase tracking-[0.5em]">Fónica // Audiofilo Experiencia</p>
                 </div>
             </div>
         </div>

@@ -10,73 +10,80 @@ export default function SettingsModal({ onClose, onOpenPremium }: { onClose: () 
 
     return (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
-            <div className="absolute inset-0 bg-obsidian/95 backdrop-blur-2xl" onClick={onClose}></div>
+            <div className="absolute inset-0 bg-[#0a0a0a]/95 backdrop-blur-2xl" onClick={onClose}></div>
 
-            <div className="relative w-full max-w-md bg-obsidian border border-bronze/20 rounded-[40px] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-500">
-                <div className="p-8 space-y-8">
+            <div className="relative w-full max-w-md bg-[#0f0f0f] border border-[#2a2a2a] rounded-[48px] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-500">
+                {/* Decorative Top Accent */}
+                <div className="h-1.5 w-full bg-gradient-to-r from-transparent via-[#FFD700]/40 to-transparent"></div>
+
+                <div className="p-10 space-y-8">
                     <div className="flex justify-between items-center">
-                        <h2 className="text-2xl font-serif font-bold text-white">Configuración</h2>
-                        <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full text-white/40">
+                        <h2 className="text-3xl font-serif font-black text-white">Perfil</h2>
+                        <button onClick={onClose} className="p-2 bg-white/5 hover:bg-white/10 rounded-full text-white/40 hover:text-white transition-all">
                             <X className="w-5 h-5" />
                         </button>
                     </div>
 
                     {/* Avatar Section */}
-                    <div className="flex flex-col items-center space-y-4">
+                    <div className="flex flex-col items-center space-y-4 pt-2">
                         <div className="relative group">
-                            <div className="w-24 h-24 rounded-full bg-bronze/10 border-2 border-bronze/30 flex items-center justify-center overflow-hidden">
+                            <div className="w-28 h-28 rounded-full bg-[#1a1a1a] border-4 border-[#FFD700]/10 flex items-center justify-center overflow-hidden shadow-2xl">
                                 {user.avatar ? (
                                     <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
                                 ) : (
-                                    <User className="w-12 h-12 text-bronze" />
+                                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a]">
+                                        <User className="w-14 h-14 text-[#FFD700]/20" />
+                                    </div>
                                 )}
                             </div>
-                            <button className="absolute bottom-0 right-0 p-2 bg-bronze text-obsidian rounded-full shadow-lg transform group-hover:scale-110 transition-transform">
+                            <button className="absolute bottom-0 right-0 p-3 bg-[#FFD700] text-black rounded-full shadow-2xl transform group-hover:scale-110 transition-all">
                                 <Camera className="w-4 h-4" />
                             </button>
                         </div>
                         <div className="text-center">
-                            <h3 className="text-lg font-bold text-white">{user.name}</h3>
-                            <p className="text-xs text-bronze/60 font-mono tracking-widest">{user.isPremium ? "SOCIO PREMIUM" : "ACCESO ESTÁNDAR"}</p>
+                            <h3 className="text-2xl font-bold text-white tracking-tight">{user.name}</h3>
+                            <div className="flex items-center justify-center space-x-2 mt-1">
+                                {user.isPremium ? (
+                                    <div className="flex items-center space-x-1 px-3 py-1 bg-[#FFD700]/10 border border-[#FFD700]/20 rounded-full">
+                                        <Crown className="w-3 h-3 text-[#FFD700]" />
+                                        <span className="text-[9px] text-[#FFD700] font-black uppercase tracking-[0.2em]">SOCIO PREMIUM</span>
+                                    </div>
+                                ) : (
+                                    <span className="text-[9px] text-white/30 font-black uppercase tracking-[0.2em]">ACCESO ESTÁNDAR</span>
+                                )}
+                            </div>
                         </div>
                     </div>
 
                     {/* Personal Info */}
-                    <div className="space-y-4">
-                        <div className="flex items-center space-x-4 p-4 bg-white/5 rounded-2xl border border-white/5">
-                            <Mail className="w-4 h-4 text-bronze/40" />
+                    <div className="space-y-3">
+                        <div className="flex items-center space-x-4 p-5 bg-[#1a1a1a] rounded-3xl border border-white/5 shadow-inner">
+                            <Mail className="w-4 h-4 text-[#FFD700]/30" />
                             <div>
-                                <p className="text-[10px] uppercase tracking-widest text-bronze/40">Email</p>
-                                <p className="text-sm text-white/80">{user.email}</p>
+                                <p className="text-[9px] uppercase tracking-[0.3em] font-black text-[#FFD700]/40 mb-0.5">Email Registrado</p>
+                                <p className="text-sm text-white/90 font-medium">{user.email}</p>
                             </div>
                         </div>
-                        <div className="flex items-center space-x-4 p-4 bg-white/5 rounded-2xl border border-white/5">
-                            <Globe className="w-4 h-4 text-bronze/40" />
+                        <div className="flex items-center space-x-4 p-5 bg-[#1a1a1a] rounded-3xl border border-white/5 shadow-inner">
+                            <Globe className="w-4 h-4 text-[#FFD700]/30" />
                             <div>
-                                <p className="text-[10px] uppercase tracking-widest text-bronze/40">País</p>
-                                <p className="text-sm text-white/80">{user.country}</p>
-                            </div>
-                        </div>
-                        <div className="flex items-center space-x-4 p-4 bg-white/5 rounded-2xl border border-white/5">
-                            <Phone className="w-4 h-4 text-bronze/40" />
-                            <div>
-                                <p className="text-[10px] uppercase tracking-widest text-bronze/40">Teléfono</p>
-                                <p className="text-sm text-white/80">{user.phone}</p>
+                                <p className="text-[9px] uppercase tracking-[0.3em] font-black text-[#FFD700]/40 mb-0.5">Localización</p>
+                                <p className="text-sm text-white/90 font-medium">{user.country}</p>
                             </div>
                         </div>
                     </div>
 
-                    <div className="space-y-3 pt-4 border-t border-white/5">
+                    <div className="space-y-4 pt-4 border-t border-white/5">
                         {!user.isPremium && (
                             <button
                                 onClick={() => {
                                     onOpenPremium();
                                     onClose();
                                 }}
-                                className="w-full py-4 bg-bronze/10 border border-bronze/20 text-bronze rounded-2xl font-black uppercase text-[10px] tracking-[0.2em] flex items-center justify-center space-x-2 hover:bg-bronze hover:text-obsidian transition-all"
+                                className="w-full py-5 bg-[#FFD700] text-black rounded-[32px] font-black uppercase text-[11px] tracking-[0.3em] flex items-center justify-center space-x-3 hover:bg-white hover:shadow-2xl transition-all"
                             >
                                 <Crown className="w-4 h-4" />
-                                <span>Mejorar a Premium</span>
+                                <span>Mejorar a Maestro</span>
                             </button>
                         )}
                         <button
@@ -84,12 +91,16 @@ export default function SettingsModal({ onClose, onOpenPremium }: { onClose: () 
                                 logout();
                                 onClose();
                             }}
-                            className="w-full py-4 text-red-500/60 hover:text-red-500 text-[10px] font-black uppercase tracking-widest transition-colors flex items-center justify-center space-x-2"
+                            className="w-full py-4 text-red-500/40 hover:text-red-500 text-[10px] font-black uppercase tracking-[0.4em] transition-all flex items-center justify-center space-x-3 group"
                         >
-                            <LogOut className="w-4 h-4" />
-                            <span>Cerrar Sesión</span>
+                            <LogOut className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                            <span>Cerrar Sesión Técnica</span>
                         </button>
                     </div>
+                </div>
+
+                <div className="p-8 bg-[#141414] border-t border-white/5 text-center">
+                    <p className="text-[10px] text-white/10 font-bold uppercase tracking-[0.5em]">Fónica Systems // Account Central</p>
                 </div>
             </div>
         </div>

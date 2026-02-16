@@ -26,13 +26,15 @@ export default function Home() {
     const [showSettings, setShowSettings] = useState(false);
     const [showPremium, setShowPremium] = useState(false);
 
-    // Initial Gate
+    /* Removing automatic auth trigger - only shows on manual click now */
+    /*
     useEffect(() => {
         if (!user) {
             const timer = setTimeout(() => setShowAuth(true), 1500);
             return () => clearTimeout(timer);
         }
     }, [user]);
+    */
 
     const handleUpload = async (file: File) => {
         setIsAnalyzing(true);
@@ -133,23 +135,26 @@ export default function Home() {
                     {activeTab === "advisor" && (
                         <div className="flex flex-col">
                             {/* Hero Section - Netflix Style */}
-                            <div className="relative h-[80vh] w-full overflow-hidden flex items-end">
+                            <div className="relative h-[50vh] min-h-[400px] w-full overflow-hidden flex items-center pt-24">
                                 {/* Background Image placeholder - Premium Hi-Fi */}
                                 <div className="absolute inset-0 z-0">
                                     <div className="absolute inset-0 bg-gradient-to-t from-netflix-black via-netflix-black/40 to-transparent z-10" />
                                     <div className="absolute inset-0 bg-gradient-to-r from-netflix-black via-netflix-black/20 to-transparent z-10" />
                                     <img
                                         src="https://images.unsplash.com/photo-1545453303-122997921159?q=80&w=2000&auto=format&fit=crop"
-                                        alt="Hi-Fi Equipment"
+                                        alt="Fónica Hero"
                                         className="w-full h-full object-cover opacity-60"
                                     />
                                 </div>
 
-                                <div className="relative z-20 max-w-7xl mx-auto px-6 pb-20 w-full space-y-6">
-                                    <h1 className="text-5xl md:text-7xl font-bold tracking-tight max-w-3xl leading-tight">
-                                        Fónica - Tu Guía <span className="text-netflix-red">Hi-Fi</span>
-                                    </h1>
-                                    <p className="text-xl md:text-2xl text-netflix-text max-w-2xl font-medium">
+                                <div className="relative z-20 max-w-7xl mx-auto px-6 w-full space-y-4">
+                                    <div className="space-y-1">
+                                        <p className="text-[10px] font-black text-netflix-red uppercase tracking-[0.4em]">Hi-Fi Equipment</p>
+                                        <h1 className="text-3xl md:text-4xl font-black tracking-tight max-w-3xl leading-none">
+                                            <span className="text-netflix-red">Fónica</span> - Tu Guía <span className="text-netflix-red">Hi-Fi</span>
+                                        </h1>
+                                    </div>
+                                    <p className="text-lg text-netflix-text max-w-xl font-medium opacity-80 leading-relaxed">
                                         Experiencia audiófila definitiva. Identifica, optimiza y descubre la verdadera alma de tu sistema de sonido.
                                     </p>
                                     <div className="flex space-x-4 pt-4">
@@ -219,39 +224,64 @@ export default function Home() {
             {/* Premium Upgrade Modal */}
             {showPremium && (
                 <div className="fixed inset-0 z-[300] flex items-center justify-center p-4">
-                    <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" onClick={() => setShowPremium(false)}></div>
-                    <div className="relative bg-netflix-dark border border-netflix-border p-12 rounded-lg max-w-md w-full text-center space-y-8 animate-in zoom-in-95 duration-300">
-                        <div className="w-20 h-20 bg-netflix-red rounded-lg flex items-center justify-center mx-auto shadow-2xl">
-                            <Crown className="w-10 h-10 text-white" />
+                    <div className="absolute inset-0 bg-[#0a0a0a]/98 backdrop-blur-md" onClick={() => setShowPremium(false)}></div>
+                    <div className="relative bg-[#0f0f0f] border border-[#2a2a2a] p-12 rounded-[48px] max-w-lg w-full text-center space-y-10 animate-in zoom-in-95 duration-300 shadow-2xl">
+                        {/* Decorative Top Accent */}
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 h-1 w-32 bg-[#FFD700] rounded-b-full shadow-[0_0_20px_rgba(255,215,0,0.3)]"></div>
+
+                        <div className="w-24 h-24 bg-gradient-to-br from-[#FFD700] to-[#B8860B] rounded-3xl flex items-center justify-center mx-auto shadow-[0_0_50px_rgba(255,215,0,0.2)] transform -rotate-6">
+                            <Crown className="w-12 h-12 text-black" />
                         </div>
+
                         <div className="space-y-4">
-                            <h2 className="text-4xl font-bold text-white">Suscripción Maestro</h2>
-                            <p className="text-netflix-muted text-lg">Confirmar suscripción mensual para acceso ilimitado a la IA por <span className="text-white font-bold">$3 USD</span>.</p>
-                            <div className="space-y-2 text-left pt-4">
-                                <div className="flex items-center space-x-2 text-sm text-white">
-                                    <div className="w-1.5 h-1.5 bg-premium-gold rounded-full" />
-                                    <span>Consultas ilimitadas con Gemini 2.0 Flash</span>
+                            <h2 className="text-4xl font-serif font-black text-white leading-tight">Suscripción <span className="text-[#FFD700]">Maestro</span></h2>
+                            <p className="text-[#FFD700]/70 text-sm font-bold uppercase tracking-[0.2em]">Acceso de Élite Ilimitado</p>
+                        </div>
+
+                        <div className="bg-[#1a1a1a] rounded-[32px] p-8 space-y-6 border border-white/5 shadow-inner text-left">
+                            <p className="text-white/80 text-center text-sm font-medium">
+                                Confirmar membresía para desbloquear el máximo potencial de la IA por solo <span className="text-white font-black text-lg">$3 USD</span>/mes.
+                            </p>
+
+                            <div className="space-y-4 pt-2">
+                                <div className="flex items-start space-x-4">
+                                    <div className="p-1.5 bg-[#FFD700]/10 rounded-lg">
+                                        <Zap className="w-4 h-4 text-[#FFD700]" />
+                                    </div>
+                                    <p className="text-xs text-white/70 leading-relaxed"><span className="text-white font-bold">Consultas Ilimitadas:</span> Sin cuotas diarias en identificación y chat técnico.</p>
                                 </div>
-                                <div className="flex items-center space-x-2 text-sm text-white">
-                                    <div className="w-1.5 h-1.5 bg-premium-gold rounded-full" />
-                                    <span>Análisis profundo de topologías</span>
+                                <div className="flex items-start space-x-4">
+                                    <div className="p-1.5 bg-[#FFD700]/10 rounded-lg">
+                                        <ShieldCheck className="w-4 h-4 text-[#FFD700]" />
+                                    </div>
+                                    <p className="text-xs text-white/70 leading-relaxed"><span className="text-white font-bold">Análisis Pro:</span> Acceso a esquemas de conexión y topologías complejas.</p>
                                 </div>
-                                <div className="flex items-center space-x-2 text-sm text-white">
-                                    <div className="w-1.5 h-1.5 bg-premium-gold rounded-full" />
-                                    <span>Tips VIP de sinergia y cables</span>
+                                <div className="flex items-start space-x-4">
+                                    <div className="p-1.5 bg-[#FFD700]/10 rounded-lg">
+                                        <Crown className="w-4 h-4 text-[#FFD700]" />
+                                    </div>
+                                    <p className="text-xs text-white/70 leading-relaxed"><span className="text-white font-bold">Sinergia VIP:</span> Recomendaciones personalizadas de cables y componentes.</p>
                                 </div>
                             </div>
                         </div>
-                        <button
-                            onClick={() => {
-                                updateProfile({ isPremium: true });
-                                setShowPremium(false);
-                            }}
-                            className="w-full py-4 bg-netflix-red text-white rounded font-bold uppercase text-sm tracking-widest hover:bg-netflix-red/90 transition-all"
-                        >
-                            Confirmar y Activar
-                        </button>
-                        <button onClick={() => setShowPremium(false)} className="text-xs font-bold uppercase tracking-widest text-netflix-muted hover:text-white transition-colors">Cancelar</button>
+
+                        <div className="space-y-4">
+                            <button
+                                onClick={() => {
+                                    updateProfile({ isPremium: true });
+                                    setShowPremium(false);
+                                }}
+                                className="w-full py-5 bg-[#FFD700] text-black rounded-[32px] font-black uppercase text-xs tracking-[0.4em] hover:bg-white hover:shadow-2xl transition-all transform hover:-translate-y-1"
+                            >
+                                Confirmar y Activar
+                            </button>
+                            <button
+                                onClick={() => setShowPremium(false)}
+                                className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20 hover:text-white transition-all"
+                            >
+                                Quizás más tarde
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
