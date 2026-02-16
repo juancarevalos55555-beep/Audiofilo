@@ -38,6 +38,26 @@
   letter-spacing: 0.05em;
 }
 
+.markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+}
+
+.markdown-content th,
+.markdown-content td {
+  border: 1px solid #404040;
+  padding: 0.5rem;
+  text-align: left;
+}
+
+.markdown-content th {
+  background-color: #333;
+  color: #FFD700;
+}
+
 :root {
   --foreground-rgb: 212, 175, 55;
   --background-start-rgb: 18, 22, 25;
