@@ -1,4 +1,4 @@
-const apiKey = "AIzaSyAxn8It3652L2h7Yjmjqr7HkvEOriKvVds"; // Hardcoded for diagnostic to avoid env issues in this script
+const apiKey = process.env.GEMINI_API_KEY; // Hardcoded for diagnostic to avoid env issues in this script
 
 async function listModels() {
     try {

@@ -1,4 +1,4 @@
-const apiKey = "AIzaSyAxn8It3652L2h7Yjmjqr7HkvEOriKvVds";
+const apiKey = process.env.GEMINI_API_KEY;
 const models = [
     "gemini-1.5-flash",
     "gemini-1.5-pro",
