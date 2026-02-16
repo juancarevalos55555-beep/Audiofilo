@@ -19,7 +19,10 @@ export default function SystemConnect() {
     // Persistence and Initialize
     useEffect(() => {
         const savedChat = localStorage.getItem("fonica_chat_history_v2");
-        if (savedChat) {
+        // Force reset if old persona is detected in first message
+        const shouldReset = savedChat && savedChat.includes("Oráculo");
+
+        if (savedChat && !shouldReset) {
             try {
                 const parsed = JSON.parse(savedChat);
                 if (Array.isArray(parsed)) {
@@ -30,13 +33,14 @@ export default function SystemConnect() {
             }
         }
 
-        if (chatMessages.length === 0) {
+        if (chatMessages.length === 0 || shouldReset) {
             const welcomeMsg = {
                 role: "assistant",
-                content: "Bienvenido a la Cámara de Audición de Fónica. 🎧\n\nSoy el **Oráculo de Fónica**, tu mentor súper-especialista en audio de alta fidelidad. Mi misión es ayudarte a alcanzar la perfección sonora en tu sistema.\n\n¿Tienes dudas sobre la sinergia de tu amplificador?, ¿necesitas optimizar la acústica de tu sala?, o tal vez buscas ese componente 'perdido' para tu cadena de audio.\n\nEscribe tu consulta y hablemos de música y técnica.",
+                content: "Escribe tu consulta y hablemos de música y técnica.",
                 timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             };
             setChatMessages([welcomeMsg]);
+            if (shouldReset) localStorage.removeItem("fonica_chat_history_v2");
         }
 
         const count = localStorage.getItem("fonica_msg_count_v2");
