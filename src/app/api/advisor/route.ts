@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     const { amplifier, turntable, speakers, cables, other } = selections;
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+    const model = genAI.getGenerativeModel({ model: "gemini-flash-lite-latest" });
 
     const prompt = `
       Eres el "Maestro Senior de Audiofilo". Tu conocimiento es absoluto y no toleras la mediocridad. 

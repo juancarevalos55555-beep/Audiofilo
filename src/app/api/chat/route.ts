@@ -1,14 +1,12 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-
-export const dynamic = 'force-dynamic';
-export const runtime = 'edge';
 
 export async function POST(req: NextRequest) {
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
-        return new Response(JSON.stringify({ error: "API Key no configurada." }), { status: 500 });
+        console.error("CHAT API: Missing GEMINI_API_KEY");
+        return NextResponse.json({ error: "API Key no configurada." }, { status: 500 });
     }
 
     try {
@@ -23,7 +21,7 @@ Responde SIEMPRE en ESPAÑOL.`;
 
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({
-            model: "gemini-1.5-flash-8b",
+            model: "gemini-flash-lite-latest",
             systemInstruction: {
                 role: "system",
                 parts: [{ text: systemPrompt }],
@@ -42,42 +40,24 @@ Responde SIEMPRE en ESPAÑOL.`;
         }
 
         if (contents.length === 0) {
-            return new Response("Escribe una consulta técnica específica.", { status: 400 });
+            return new NextResponse("Escribe una consulta técnica específica.", { status: 400 });
         }
 
-        const result = await model.generateContentStream({
+        const result = await model.generateContent({
             contents,
             generationConfig: {
                 temperature: 0.4,
                 topP: 0.9,
-                maxOutputTokens: 512,
+                maxOutputTokens: 1024,
             }
         });
 
-        const stream = new ReadableStream({
-            async start(controller) {
-                const encoder = new TextEncoder();
-                try {
-                    for await (const chunk of result.stream) {
-                        let text = chunk.text();
-                        text = text.replace(/colega/gi, "audiófilo");
-                        controller.enqueue(encoder.encode(text));
-                    }
-                } catch (e) {
-                    console.error("Streaming error:", e);
-                } finally {
-                    controller.close();
-                }
-            },
-        });
+        let text = result.response.text();
+        text = text.replace(/colega/gi, "audiófilo");
 
-        return new Response(stream, {
-            headers: {
-                "Content-Type": "text/plain; charset=utf-8",
-                "X-Content-Type-Options": "nosniff"
-            },
-        });
+        return new NextResponse(text);
     } catch (error: any) {
-        return new Response("Error: " + error.message, { status: 500 });
+        console.error("Chat API Detailed Error:", error);
+        return new NextResponse("SERVER_ERROR: " + (error.message || "Desconocido"), { status: 500 });
     }
 }

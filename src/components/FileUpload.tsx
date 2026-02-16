@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { Upload, FileImage, ShieldCheck, Search } from "lucide-react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -16,6 +16,25 @@ interface FileUploadProps {
 
 export default function FileUpload({ onUpload, isAnalyzing }: FileUploadProps) {
     const [isDragging, setIsDragging] = useState(false);
+    const [loadingStage, setLoadingStage] = useState(0);
+    const stages = [
+        "Escaneando circuitos...",
+        "Consultando archivos históricos...",
+        "Analizando firma sonora...",
+        "Generando reporte técnico..."
+    ];
+
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (isAnalyzing) {
+            interval = setInterval(() => {
+                setLoadingStage((prev) => (prev + 1) % stages.length);
+            }, 2000);
+        } else {
+            setLoadingStage(0);
+        }
+        return () => clearInterval(interval);
+    }, [isAnalyzing]);
 
     const handleDrag = useCallback((e: React.DragEvent) => {
         e.preventDefault();
@@ -61,14 +80,16 @@ export default function FileUpload({ onUpload, isAnalyzing }: FileUploadProps) {
                 isDragging ? "border-netflix-red" : "border-white/5 group-hover:border-netflix-red/20"
             )}>
                 {isAnalyzing ? (
-                    <div className="space-y-6 animate-pulse">
+                    <div className="space-y-6">
                         <div className="relative">
                             <div className="w-20 h-20 border-t-2 border-netflix-red rounded-full animate-spin" />
-                            <Search className="absolute inset-0 m-auto w-6 h-6 text-netflix-red" />
+                            <Search className="absolute inset-0 m-auto w-6 h-6 text-netflix-red animate-pulse" />
                         </div>
                         <div className="space-y-2">
-                            <p className="text-xl font-bold tracking-tight text-white uppercase">Analizando Equipo</p>
-                            <p className="text-netflix-muted text-[10px] tracking-[0.3em] font-bold uppercase">Buscando en la base de datos Hi-Fi</p>
+                            <p className="text-xl font-bold tracking-tight text-white uppercase animate-in fade-in duration-500" key={loadingStage}>
+                                {stages[loadingStage]}
+                            </p>
+                            <p className="text-netflix-muted text-[10px] tracking-[0.3em] font-bold uppercase">Procesamiento IA en curso</p>
                         </div>
                     </div>
                 ) : (
