@@ -94,7 +94,7 @@ Responde SIEMPRE en ESPAÑOL y sé el mejor mentor que un audiófilo pueda tener
         console.error("Chat API Error:", error);
         return NextResponse.json({
             role: "assistant",
-            content: "Error técnico: " + (error.message || "Interferencia en la señal.")
+            content: "Error Técnico [v8-flash-latest]: " + (error.message || "Interferencia en la señal.")
         });
     }
 }
