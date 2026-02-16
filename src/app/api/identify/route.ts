@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
   } catch (error: any) {
     console.error("API Error:", error);
     return NextResponse.json(
-      { error: `Error en la identificación: ${error.message || "La IA no pudo procesar esta imagen"}. Verifica la API Key.` },
+      { error: "Error en la identificación: " + (error.message || "La IA no pudo procesar esta imagen") },
       { status: 500 }
     );
   }

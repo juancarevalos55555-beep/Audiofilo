@@ -199,11 +199,6 @@ export default function SystemConnect() {
 
             if (error.message === "QUOTA_EXCEEDED") {
                 displayMessage = "⚠️ **Límite de Consultas Alcanzado**\n\nEl asesor está atendiendo a muchos audiófilos en este momento. Por favor, espera unos segundos o intenta más tarde para mantener la calidad técnica de la respuesta.";
-            } else if (error.message.includes("SERVER_ERROR")) {
-                displayMessage = `❌ **Error Técnico Detectado:**\n\n${error.message}\n\nPor favor, verifica la configuración de la llaves de API en Vercel.`;
-            } else {
-                // Fallback for any other unexpected error string
-                displayMessage = `⚠️ **Interferencia Técnica:**\n\n${error.message}\n\nRevisa tu conexión o la API Key.`;
             }
 
             setChatMessages(prev => [...prev, {
