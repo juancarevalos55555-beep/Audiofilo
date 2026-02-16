@@ -14,6 +14,7 @@ export default function SystemConnect() {
     const [currentMessage, setCurrentMessage] = useState("");
     const [isChatLoading, setIsChatLoading] = useState(false);
     const chatEndRef = useRef<HTMLDivElement>(null);
+    const isInitialLoad = useRef(true);
     const [msgCount, setMsgCount] = useState(0);
 
     // Persistence and Initialize
@@ -52,7 +53,12 @@ export default function SystemConnect() {
             const limitedHistory = chatMessages.slice(-50);
             localStorage.setItem("fonica_chat_history_v2", JSON.stringify(limitedHistory));
 
-            // Auto-scroll ONLY for user messages
+            // Auto-scroll ONLY for user messages and NOT on initial load
+            if (isInitialLoad.current) {
+                isInitialLoad.current = false;
+                return;
+            }
+
             const lastMsg = chatMessages[chatMessages.length - 1];
             if (lastMsg.role === "user") {
                 chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
