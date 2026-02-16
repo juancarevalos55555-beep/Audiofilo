@@ -174,8 +174,8 @@ export default function SystemConnect() {
     ];
 
     return (
-        <div className="w-full h-[calc(100vh-80px)] flex flex-col pt-4 pb-4 px-4 md:px-6 animate-in fade-in duration-1000">
-            <div className="max-w-4xl mx-auto w-full flex-1 flex flex-col bg-[#1a1a1a] rounded-xl border border-[#404040] overflow-hidden relative shadow-2xl bg-gradient-to-b from-[#1a1a1a] to-[#0f0f0f]">
+        <div className="fixed top-20 left-0 right-0 bottom-0 bg-netflix-black z-40 flex flex-col p-4 md:p-6 animate-in fade-in duration-1000 overflow-hidden">
+            <div className="max-w-4xl mx-auto w-full h-full flex flex-col bg-[#1a1a1a] rounded-xl border border-[#404040] overflow-hidden relative shadow-2xl bg-gradient-to-b from-[#1a1a1a] to-[#0f0f0f]">
                 {/* Chat Header */}
                 <div className="sticky top-0 px-6 py-4 bg-[#1a1a1a] border-b border-[#404040] flex items-center justify-between z-30">
                     <div className="flex items-center space-x-3">
