@@ -93,17 +93,22 @@ export default function SystemConnect() {
                 }),
             });
             const data = await response.json();
-            const aiMsg = {
-                ...data,
-                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            };
-            setChatMessages(prev => [...prev, aiMsg]);
-            setMsgCount(prev => prev + 1);
-        } catch (error) {
+
+            if (data.role && data.content) {
+                const aiMsg = {
+                    ...data,
+                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                };
+                setChatMessages(prev => [...prev, aiMsg]);
+                setMsgCount(prev => prev + 1);
+            } else {
+                throw new Error(data.error || "Respuesta vacía");
+            }
+        } catch (error: any) {
             console.error("Chat Error:", error);
             setChatMessages(prev => [...prev, {
                 role: "assistant",
-                content: "Disculpa, he tenido una interferencia técnica. Probemos de nuevo.",
+                content: error.message || "Disculpa, he tenido una interferencia técnica. Probemos de nuevo.",
                 timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             }]);
         } finally {

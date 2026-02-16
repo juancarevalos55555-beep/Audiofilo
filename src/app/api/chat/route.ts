@@ -47,12 +47,20 @@ export async function POST(req: NextRequest) {
 
 Responde SIEMPRE en ESPAÑOL y sé el mejor mentor que un audiófilo pueda tener.`;
 
-        // Format history for Gemini
+        // Format history for Gemini - MUST start with 'user'
         console.log("Chat History received:", messages.length, "messages");
-        const history = messages.slice(0, -1).map((m: any) => ({
-            role: m.role === "assistant" ? "model" : "user",
-            parts: [{ text: m.content }],
-        }));
+
+        const history = messages.slice(0, -1)
+            .filter((m: any) => m.content && m.content.trim() !== "")
+            .map((m: any) => ({
+                role: m.role === "assistant" ? "model" : "user",
+                parts: [{ text: m.content }],
+            }));
+
+        // Gemini strict rule: History must start with a user message
+        if (history.length > 0 && history[0].role === "model") {
+            history.shift();
+        }
 
         const chat = model.startChat({
             history: history,
@@ -62,18 +70,31 @@ Responde SIEMPRE en ESPAÑOL y sé el mejor mentor que un audiófilo pueda tener
         const latestMessage = messages[messages.length - 1].content;
         const result = await chat.sendMessage(latestMessage);
         const response = await result.response;
-        const text = response.text() || "Disculpa, mi análisis técnico ha sido bloqueado por seguridad. ¿Podrías reformular tu pregunta?";
 
-        if (!text) {
-            return NextResponse.json({ role: "assistant", content: "He analizado tu consulta pero no he podido generar una respuesta técnica segura en este momento. Intenta preguntar sobre componentes específicos." });
+        let text = "";
+        try {
+            text = response.text();
+        } catch (e) {
+            console.error("Error calling response.text():", e);
+            // If blocked, finishReason might tell us why
+            const candidate = response.candidates?.[0];
+            if (candidate?.finishReason === "SAFETY") {
+                text = "Mi análisis técnico ha detectado contenido que no puedo procesar por políticas de seguridad. ¿Podrías reformular tu consulta?";
+            } else {
+                text = "He tenido un problema procesando tu consulta técnica. Por favor, intenta de nuevo.";
+            }
+        }
+
+        if (!text || text.trim() === "") {
+            text = "Mi sensor de respuesta está en silencio. Probemos con una pregunta sobre componentes técnicos específicos.";
         }
 
         return NextResponse.json({ role: "assistant", content: text });
     } catch (error: any) {
         console.error("Chat API Error:", error);
-        return NextResponse.json(
-            { error: "Error en el chat: " + error.message },
-            { status: 500 }
-        );
+        return NextResponse.json({
+            role: "assistant",
+            content: "Error técnico: " + (error.message || "Interferencia en la señal.")
+        });
     }
 }
