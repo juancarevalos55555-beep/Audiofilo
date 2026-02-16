@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     const { amplifier, turntable, speakers, cables, other } = selections;
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    // Using gemini-2.5-flash for stability and quota
+    // Using gemini-2.0-flash for stability and quota
     const model = genAI.getGenerativeModel({
       model: "gemini-2.0-flash",
       generationConfig: {

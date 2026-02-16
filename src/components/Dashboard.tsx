@@ -11,13 +11,15 @@ import SpecsTable from "./SpecsTable";
 import InternalTopology from "./InternalTopology";
 import ExpertVoice from "./ExpertVoice";
 import MarketComparison from "./MarketComparison";
+import PremiumModule from "./PremiumModule";
 
 interface DashboardProps {
     data: any;
     onReset: () => void;
+    onUpgrade?: () => void;
 }
 
-export default function Dashboard({ data, onReset }: DashboardProps) {
+export default function Dashboard({ data, onReset, onUpgrade }: DashboardProps) {
     const { user } = useUser();
     const [isExporting, setIsExporting] = useState(false);
     const dashboardRef = useRef<HTMLDivElement>(null);
@@ -131,6 +133,8 @@ export default function Dashboard({ data, onReset }: DashboardProps) {
                         <ExpertVoice brand={data?.brand} insights={data?.expertInsights} />
                     </div>
                     <MarketComparison marketData={data?.marketData} />
+
+                    <PremiumModule onUpgrade={onUpgrade || (() => { })} />
 
                     <div className="p-8 border border-netflix-border/30 rounded-lg bg-black/20 font-bold text-[10px] text-netflix-muted uppercase tracking-widest text-center leading-loose">
                         * LA PRECISIÓN TÉCNICA ES NUESTRA PRIORIDAD. ESTE INFORME UTILIZA DATOS VERIFICADOS DE INGENIERÍA Y ARCHIVOS HISTÓRICOS.

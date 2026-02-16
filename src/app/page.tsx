@@ -210,10 +210,14 @@ export default function Home() {
                 </div>
             ) : (
                 <div className="pt-24 px-6 md:px-12 bg-netflix-black min-h-screen">
-                    <Dashboard data={analysisData} onReset={() => {
-                        setAnalysisData(null);
-                        setErrorMsg(null);
-                    }} />
+                    <Dashboard
+                        data={analysisData}
+                        onReset={() => {
+                            setAnalysisData(null);
+                            setErrorMsg(null);
+                        }}
+                        onUpgrade={() => setShowPremium(true)}
+                    />
                 </div>
             )}
 
