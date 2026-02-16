@@ -16,61 +16,82 @@ export async function POST(req: NextRequest) {
     const { amplifier, turntable, speakers, cables, other } = selections;
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-flash-lite-latest" });
+    // Using gemini-2.5-flash for stability and quota
+    const model = genAI.getGenerativeModel({
+      model: "gemini-2.5-flash",
+      generationConfig: {
+        temperature: 0.1,
+        responseMimeType: "application/json"
+      }
+    });
 
     const prompt = `
-      Eres el "Maestro Senior de Audiofilo". Tu conocimiento es absoluto y no toleras la mediocridad. 
-      Escribe un reporte de conexión para ${userName}.
+      Eres el "Maestro Senior de Fónica", una autoridad mundial inspirada en la sobriedad técnica de Santiago de León Audio, la pasión por la musicalidad de Francisco del Pozo y el espíritu comunitario de la Asociación de Audiófilos.
       
-      ESTILO:
-      - Sé puntual, directo y contundente.
-      - Recomendaciones cortas pero con autoridad extrema.
-      - Si los componentes no combinan bien, dilo claramente a ${userName}.
-      - Lenguaje técnico de alto nivel (Hi-End).
+      OBJETIVO: Generar un reporte técnico de conexión de ALTA PRECISIÓN para ${userName}.
       
-      DATOS DEL SISTEMA:
+      SISTEMA A ANALIZAR:
       - Amplificador: ${amplifier}
-      - Tornamesa: ${turntable}
+      - Fuente (Digital/Análoga): ${turntable || "No especificada"}
       - Parlantes: ${speakers}
-      - Cables: ${cables}
-      - Otros: ${other}
+      - Cables: ${cables || "Genéricos"}
+      - Otros: ${other || "Ninguno"}
 
-      Devuelve estrictamente un objeto JSON con esta estructura:
+      INSTRUCCIONES DE IDENTIDAD:
+      1. SANTIAGO DE LEÓN: Analiza la topología (ej. si el Sansui AU-717 es Direct-FET) y advierte sobre ruidos de bucle o ajustes de bias si es equipo vintage.
+      2. FRANCISCO DEL POZO: Evalúa la escena sonora y la transparencia que esta combinación específica producirá.
+      3. ASOCIACIÓN DE AUDIÓFILOS: Menciona cómo este sistema se comportaría en una sala compartida o su valor como pieza de colección.
+
+      ESTRUCTURA DE RESPUESTA (JSON ESTRICTO):
       {
-        "title": "Configuración Maestro para ${userName}",
-        "intro": "Resumen ejecutivo y veredicto inicial.",
-        "synergyDetails": "Análisis rápido y punzante de la sinergia.",
-        "expertTips": ["Tip 1 corto", "Tip 2 corto"],
+        "title": "Configuración Maestro: ${amplifier} + ${speakers}",
+        "intro": "Veredicto ejecutivo corto y contundente.",
+        "synergyDetails": "Análisis profundo de cómo interactúan eléctricamente y acústicamente estos componentes.",
+        "expertTips": ["Mínimo 3 tips técnicos cortos y accionables"],
         "connectionScheme": {
-          "sourceToAmp": "Instrucción directa",
-          "ampToSpeakers": "Instrucción directa",
-          "grounding": "Instrucción directa",
+          "sourceToAmp": "Instrucción de cableado desde la fuente al amplificador (puerto exacto).",
+          "ampToSpeakers": "Instrucción de cableado del amplificador a los parlantes (fase y terminales).",
+          "grounding": "Instrucción de tierra si es necesario (especialmente si hay tornamesa).",
           "visual": {
             "nodes": [
-              {"id": "source", "label": "${turntable || 'Source'}", "type": "source"},
-              {"id": "amp", "label": "${amplifier || 'Amplifier'}", "type": "amplifier"},
-              {"id": "speakers", "label": "${speakers || 'Speakers'}", "type": "speakers"}
+              {"id": "source", "label": "${turntable || 'Fuente'}", "type": "SOURCE"},
+              {"id": "amp", "label": "${amplifier}", "type": "AMPLIFIER"},
+              {"id": "speakers", "label": "${speakers}", "type": "SPEAKERS"}
             ],
             "connections": [
-              {"from": "source", "to": "amp", "cable": "RCA Phono", "desc": "Señal Analógica"},
+              {"from": "source", "to": "amp", "cable": "RCA Phono / Line", "desc": "Señal"},
               {"from": "amp", "to": "speakers", "cable": "Speaker Wire", "desc": "Potencia"}
             ]
           }
         }
       }
+
+      REGLA DE ORO: Los nodos del diagrama DEBEN usar exactamente los nombres de los equipos que el usuario proporcionó.
       Idioma: ESPAÑOL.
     `;
 
     const result = await model.generateContent(prompt);
     const responseText = result.response.text();
-    const cleanJson = responseText.replace(/```json|```/g, "").trim();
-    const advisoryData = JSON.parse(cleanJson);
 
-    return NextResponse.json(advisoryData);
+    // Safety check for parsing
+    try {
+      const advisoryData = JSON.parse(responseText.trim());
+      return NextResponse.json(advisoryData);
+    } catch (parseError) {
+      console.error("JSON Parsing Error in Advisor:", responseText);
+      // Fallback or retry logic could go here, but let's try to clean it first
+      const cleanJson = responseText.replace(/```json|```/g, "").trim();
+      return NextResponse.json(JSON.parse(cleanJson));
+    }
+
   } catch (error: any) {
     console.error("Advisor API Error:", error);
+    // Return specific quota error if detected
+    if (error.message?.includes("429") || error.message?.includes("quota")) {
+      return NextResponse.json({ error: "QUOTA_EXCEEDED" }, { status: 429 });
+    }
     return NextResponse.json(
-      { error: "Error en la asesoría: " + error.message },
+      { error: "Error en la asesoría técnica: " + error.message },
       { status: 500 }
     );
   }

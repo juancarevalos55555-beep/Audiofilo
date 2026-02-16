@@ -190,12 +190,18 @@ export default function SystemConnect() {
                 }),
             });
 
-            if (!response.ok) throw new Error("Error al obtener la asesoría.");
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Error al obtener la asesoría.");
+            }
             const data = await response.json();
             setAdvisorResult(data);
         } catch (error: any) {
             console.error("Advisor Error:", error);
-            alert("No se pudo generar la asesoría. Intenta de nuevo.");
+            const errorMsg = error.message === "QUOTA_EXCEEDED"
+                ? "Disculpa, audiófilo. He agotado mis recursos de cálculo por hoy. Por favor, intenta de nuevo en unos momentos o actualiza a Premium."
+                : "No se pudo generar la asesoría técnica. Por favor, verifica tu conexión o intenta con otros componentes.";
+            alert(errorMsg);
         } finally {
             setIsAdvisorLoading(false);
         }
