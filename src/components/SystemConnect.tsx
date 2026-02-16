@@ -49,11 +49,15 @@ export default function SystemConnect() {
 
     useEffect(() => {
         if (chatMessages.length > 0) {
-            // Limit to 50 messages
             const limitedHistory = chatMessages.slice(-50);
             localStorage.setItem("fonica_chat_history_v2", JSON.stringify(limitedHistory));
+
+            // Auto-scroll ONLY for user messages
+            const lastMsg = chatMessages[chatMessages.length - 1];
+            if (lastMsg.role === "user") {
+                chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+            }
         }
-        chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [chatMessages]);
 
     useEffect(() => {
@@ -146,7 +150,7 @@ export default function SystemConnect() {
 
             <div className="max-w-4xl mx-auto w-full flex flex-col h-[75vh] md:h-[700px] bg-[#1a1a1a] rounded-xl border border-[#404040] overflow-hidden relative shadow-2xl bg-gradient-to-b from-[#1a1a1a] to-[#0f0f0f]">
                 {/* Chat Header */}
-                <div className="px-6 py-4 bg-[#252525]/80 border-b border-[#404040] flex items-center justify-between z-10">
+                <div className="sticky top-0 px-6 py-4 bg-[#1a1a1a] border-b border-[#404040] flex items-center justify-between z-50">
                     <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 rounded-full bg-[#2d2d2d] border border-[#FFD700]/30 flex items-center justify-center">
                             <Logo className="w-6 h-6" />
@@ -176,29 +180,32 @@ export default function SystemConnect() {
 
                 {/* Messages Area */}
                 <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 scrollbar-hide">
-                    {chatMessages.map((msg, i) => (
-                        <div key={i} className={clsx(
+                    <div
+                        key={i}
+                        id={`msg-${i}`}
+                        className={clsx(
                             "flex flex-col space-y-2 max-w-[85%] md:max-w-[70%]",
                             msg.role === "user" ? "ml-auto items-end" : "mr-auto items-start"
+                        )}
+                    >
+                        <div className={clsx(
+                            "px-5 py-4 rounded-2xl text-sm md:text-base leading-relaxed whitespace-pre-wrap shadow-lg",
+                            msg.role === "user"
+                                ? "bg-[#3a3a3a] text-white rounded-tr-none"
+                                : "bg-[#2d2d2d] text-white border-l-[4px] border-l-[#FFD700] rounded-tl-none"
                         )}>
-                            <div className={clsx(
-                                "px-5 py-4 rounded-2xl text-sm md:text-base leading-relaxed whitespace-pre-wrap shadow-lg",
-                                msg.role === "user"
-                                    ? "bg-[#3a3a3a] text-white rounded-tr-none"
-                                    : "bg-[#2d2d2d] text-white border-l-[4px] border-l-[#FFD700] rounded-tl-none"
-                            )}>
-                                {msg.content}
-                            </div>
-                            <div className="flex items-center space-x-2 px-2">
-                                <span className="text-[10px] text-netflix-muted font-bold uppercase tracking-widest">
-                                    {(msg as any).timestamp}
-                                </span>
-                                <span className="text-[10px] text-[#FFD700]/40 font-bold uppercase tracking-widest">•</span>
-                                <span className="text-[10px] text-netflix-muted font-bold uppercase tracking-widest">
-                                    {msg.role === "user" ? (user?.name || "Tú") : "Experto Audiofilo"}
-                                </span>
-                            </div>
+                            {msg.content}
                         </div>
+                        <div className="flex items-center space-x-2 px-2">
+                            <span className="text-[10px] text-netflix-muted font-bold uppercase tracking-widest">
+                                {(msg as any).timestamp}
+                            </span>
+                            <span className="text-[10px] text-[#FFD700]/40 font-bold uppercase tracking-widest">•</span>
+                            <span className="text-[10px] text-netflix-muted font-bold uppercase tracking-widest">
+                                {msg.role === "user" ? (user?.name || "Tú") : "Experto Audiofilo"}
+                            </span>
+                        </div>
+                    </div>
                     ))}
                     {isChatLoading && (
                         <div className="flex flex-col items-start mr-auto space-y-3 px-2">

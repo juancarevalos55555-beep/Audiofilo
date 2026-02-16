@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
 
 ✅ ESTILO DE COMUNICACIÓN (CONCRETO Y AMIGABLE):
 - Sé CONCRETO: No divagues. Responde directamente a lo solicitado.
-- Sé AMIGABLE: Usa un lenguaje cálido y profesional. Trata al usuario como a un colega respetado.
+- Sé AMIGABLE: Usa un lenguaje cálido y profesional. Trata al usuario como a un audiofilo respetado.
 - Estructura: Usa párrafos cortos y directos.
 
 🎵 TU FILOSOFÍA:
