@@ -90,7 +90,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "QUOTA_EXCEEDED" }, { status: 429 });
     }
     return NextResponse.json(
-      { error: "Error en la asesoría técnica: " + error.message },
+      { error: `Error en la asesoría técnica: ${error.message}. Verifica la API Key.` },
       { status: 500 }
     );
   }

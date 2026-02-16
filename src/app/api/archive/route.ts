@@ -68,6 +68,6 @@ export async function POST(req: NextRequest) {
         return NextResponse.json(data);
     } catch (error: any) {
         console.error("Archive Search API Error:", error);
-        return NextResponse.json({ error: "Error al buscar en el archivo." }, { status: 500 });
+        return NextResponse.json({ error: `Error al buscar en el archivo: ${error.message}. Verifica la API Key.` }, { status: 500 });
     }
 }

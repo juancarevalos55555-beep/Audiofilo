@@ -70,9 +70,10 @@ export async function POST(req: NextRequest) {
         return new NextResponse(text);
     } catch (error: any) {
         console.error("Chat API Error:", error);
-        if (error.message?.includes("429") || error.message?.includes("quota")) {
+        const errorMsg = error.message || "Unknown Error";
+        if (errorMsg.includes("429") || errorMsg.includes("quota")) {
             return new NextResponse("QUOTA_EXCEEDED", { status: 429 });
         }
-        return new NextResponse("SERVER_ERROR", { status: 500 });
+        return new NextResponse(`SERVER_ERROR: ${errorMsg}`, { status: 500 });
     }
 }
