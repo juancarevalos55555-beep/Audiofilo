@@ -143,7 +143,7 @@ export default function SystemConnect() {
                             <Logo className="w-6 h-6" />
                         </div>
                         <div>
-                            <h4 className="text-sm font-bold text-white">Oráculo de Fónica</h4>
+                            <h4 className="text-sm font-bold text-white">Experto Audiofilo</h4>
                             <div className="flex items-center space-x-1.5">
                                 <span className="text-[10px] text-[#FFD700] font-bold uppercase tracking-widest">Súper-Especialista de Élite</span>
                             </div>
@@ -186,7 +186,7 @@ export default function SystemConnect() {
                                 </span>
                                 <span className="text-[10px] text-[#FFD700]/40 font-bold uppercase tracking-widest">•</span>
                                 <span className="text-[10px] text-netflix-muted font-bold uppercase tracking-widest">
-                                    {msg.role === "user" ? (user?.name || "Tú") : "Oráculo Experto"}
+                                    {msg.role === "user" ? (user?.name || "Tú") : "Experto Audiofilo"}
                                 </span>
                             </div>
                         </div>
