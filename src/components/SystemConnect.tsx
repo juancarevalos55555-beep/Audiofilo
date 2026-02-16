@@ -19,9 +19,9 @@ export default function SystemConnect() {
 
     // Persistence and Initialize
     useEffect(() => {
+        // Handle persistence
         const savedChat = localStorage.getItem("fonica_chat_history_v2");
-        // Force reset if old persona is detected in first message
-        const shouldReset = savedChat && savedChat.includes("Oráculo");
+        const shouldReset = savedChat && (savedChat.includes("Oráculo") || savedChat.includes("colega"));
 
         if (savedChat && !shouldReset) {
             try {
@@ -145,16 +145,8 @@ export default function SystemConnect() {
     ];
 
     return (
-        <div className="w-full max-w-7xl mx-auto space-y-8 animate-in fade-in duration-1000 px-4 md:px-6 pt-24 pb-12">
-            <header className="max-w-4xl mx-auto text-center space-y-2">
-                <h1 className="text-3xl md:text-4xl font-bold text-white flex items-center justify-center space-x-3">
-                    <span className="text-2xl md:text-3xl">🎙️</span>
-                    <span>Asesoría de Alta Fidelidad</span>
-                </h1>
-                <p className="text-netflix-muted font-medium italic">"Donde la técnica se encuentra con la música"</p>
-            </header>
-
-            <div className="max-w-4xl mx-auto w-full flex flex-col h-[75vh] md:h-[700px] bg-[#1a1a1a] rounded-xl border border-[#404040] overflow-hidden relative shadow-2xl bg-gradient-to-b from-[#1a1a1a] to-[#0f0f0f]">
+        <div className="w-full h-[calc(100vh-100px)] flex flex-col animate-in fade-in duration-1000 px-4 md:px-6 pt-4 pb-4 overflow-hidden">
+            <div className="max-w-4xl mx-auto w-full flex-1 flex flex-col bg-[#1a1a1a] rounded-xl border border-[#404040] overflow-hidden relative shadow-2xl bg-gradient-to-b from-[#1a1a1a] to-[#0f0f0f]">
                 {/* Chat Header */}
                 <div className="sticky top-0 px-6 py-4 bg-[#1a1a1a] border-b border-[#404040] flex items-center justify-between z-50">
                     <div className="flex items-center space-x-3">

@@ -89,6 +89,9 @@ IMPORTANTE: Dirígete al usuario exclusivamente como "audiófilo". Responde SIEM
             text = "Mi sensor de respuesta está en silencio. Probemos con una pregunta sobre componentes técnicos específicos.";
         }
 
+        // Post-processing forced replacement for 'colega'
+        text = text.replace(/colega/gi, "audiófilo");
+
         return NextResponse.json({ role: "assistant", content: text });
     } catch (error: any) {
         console.error("Chat API Error:", error);
