@@ -29,6 +29,29 @@ export default function SystemConnect() {
     });
     const [isAdvisorLoading, setIsAdvisorLoading] = useState(false);
     const [advisorResult, setAdvisorResult] = useState<any>(null);
+    const diagramRef = useRef<HTMLDivElement>(null);
+
+    const exportToPDF = async () => {
+        if (!diagramRef.current) return;
+        try {
+            const canvas = await html2canvas(diagramRef.current, {
+                backgroundColor: '#121212',
+                scale: 2,
+                logging: false,
+                useCORS: true
+            });
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save(`Esquema_Fonica_${new Date().getTime()}.pdf`);
+        } catch (err) {
+            console.error("PDF Export Error:", err);
+            alert("No se pudo generar el PDF.");
+        }
+    };
 
     // Persistence and Initialize
     useEffect(() => {
@@ -336,20 +359,70 @@ export default function SystemConnect() {
                                             </div>
                                         </div>
 
-                                        <div className="bg-[#121212] p-6 rounded-xl border border-[#FFD700]/20 flex flex-col items-center justify-center space-y-8">
-                                            <h5 className="text-[10px] font-bold text-[#FFD700] uppercase tracking-[0.3em] w-full text-center mb-4">Esquema de Conexión</h5>
+                                        <div className="space-y-6">
+                                            <div ref={diagramRef} className="bg-[#121212] p-8 rounded-xl border border-[#FFD700]/20 flex flex-col items-center space-y-8">
+                                                <h5 className="text-[12px] font-bold text-[#FFD700] uppercase tracking-[0.4em] w-full text-center mb-2">Esquema de Flujo de Señal</h5>
 
-                                            <div className="w-full space-y-4">
-                                                {advisorResult.connectionScheme?.visual?.nodes?.map((node: any) => (
-                                                    <div key={node.id} className="p-3 bg-[#2d2d2d] border border-[#404040] rounded text-center">
-                                                        <span className="text-[10px] font-bold text-netflix-muted uppercase tracking-tighter block">{node.type}</span>
-                                                        <span className="text-sm font-bold text-white">{node.label}</span>
+                                                <div className="w-full max-w-sm space-y-0 flex flex-col items-center">
+                                                    {advisorResult.connectionScheme?.visual?.nodes?.map((node: any, idx: number) => (
+                                                        <div key={node.id} className="flex flex-col items-center w-full">
+                                                            <div className="w-full p-4 bg-[#232323] border border-[#404040] rounded-xl text-center shadow-xl group hover:border-[#FFD700]/50 transition-all relative overflow-hidden">
+                                                                <div className="absolute top-0 left-0 w-1 h-full bg-[#FFD700]/20 group-hover:bg-[#FFD700]/40 transition-all" />
+                                                                <span className="text-[10px] font-black text-netflix-muted uppercase tracking-[0.2em] block mb-1">{node.type}</span>
+                                                                <span className="text-base font-bold text-white mb-1 block">{node.label}</span>
+                                                                {idx < advisorResult.connectionScheme.visual.nodes.length - 1 && (
+                                                                    <div className="mt-2 text-[8px] text-[#FFD700] font-black uppercase tracking-widest bg-[#FFD700]/5 py-1 px-2 rounded-full inline-block border border-[#FFD700]/10">
+                                                                        Salida: {advisorResult.connectionScheme.visual.connections[idx]?.cable || "RCA Hi-End"}
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                            {idx < advisorResult.connectionScheme.visual.nodes.length - 1 && (
+                                                                <div className="py-4 flex flex-col items-center">
+                                                                    <div className="w-0.5 h-8 bg-gradient-to-b from-[#FFD700] to-transparent shrink-0" />
+                                                                    <Cable className="w-3 h-3 text-[#FFD700] animate-pulse my-1" />
+                                                                    <div className="w-0.5 h-8 bg-gradient-to-t from-[#FFD700] to-transparent shrink-0" />
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    ))}
+                                                </div>
+
+                                                <div className="w-full bg-[#1a1a1a] p-5 rounded-xl border border-[#333] shadow-inner">
+                                                    <h6 className="text-[10px] font-bold text-[#FFD700] uppercase tracking-[0.2em] mb-4 flex items-center">
+                                                        <CheckCircle2 className="w-4 h-4 mr-2" />
+                                                        Flujo Paso a Paso
+                                                    </h6>
+                                                    <div className="space-y-4">
+                                                        <div className="flex items-start space-x-4">
+                                                            <div className="w-6 h-6 rounded-full bg-[#FFD700] text-black text-[10px] font-black flex items-center justify-center shrink-0">1</div>
+                                                            <p className="text-[11px] text-netflix-text font-medium leading-relaxed">{advisorResult.connectionScheme?.sourceToAmp}</p>
+                                                        </div>
+                                                        <div className="flex items-start space-x-4">
+                                                            <div className="w-6 h-6 rounded-full bg-[#333] text-white border border-[#444] text-[10px] font-black flex items-center justify-center shrink-0">2</div>
+                                                            <p className="text-[11px] text-netflix-text font-medium leading-relaxed">{advisorResult.connectionScheme?.ampToSpeakers}</p>
+                                                        </div>
+                                                        {advisorResult.connectionScheme?.grounding && (
+                                                            <div className="flex items-start space-x-4">
+                                                                <div className="w-6 h-6 rounded-full bg-[#333] text-white border border-[#444] text-[10px] font-black flex items-center justify-center shrink-0">3</div>
+                                                                <p className="text-[11px] text-netflix-text font-medium leading-relaxed">{advisorResult.connectionScheme?.grounding}</p>
+                                                            </div>
+                                                        )}
                                                     </div>
-                                                ))}
+                                                </div>
+
+                                                <div className="w-full text-[9px] text-netflix-muted uppercase tracking-[0.3em] text-center border-t border-white/5 pt-4">
+                                                    * Reporte Técnico Generado por Fónica AI *
+                                                </div>
                                             </div>
 
-                                            <div className="w-full text-[10px] text-netflix-muted uppercase tracking-widest text-center">
-                                                * Esquema técnico sugerido basado en sinergia Hi-End
+                                            <div className="flex justify-center">
+                                                <button
+                                                    onClick={exportToPDF}
+                                                    className="flex items-center space-x-3 px-8 py-3 bg-white text-black hover:bg-[#FFD700] transition-all rounded-full font-bold uppercase tracking-widest text-[10px] shadow-xl hover:scale-105 active:scale-95"
+                                                >
+                                                    <FileText className="w-4 h-4" />
+                                                    <span>Descargar Reporte en PDF</span>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
