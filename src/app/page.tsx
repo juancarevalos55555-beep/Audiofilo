@@ -67,17 +67,19 @@ export default function Home() {
             {/* Global Navigation - Netflix Style */}
             <nav className="fixed top-0 left-0 right-0 z-[100] netflix-gradient h-20 transition-all duration-300">
                 <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
-                    <div
-                        className="flex items-center space-x-8 cursor-pointer group"
-                        onClick={() => {
-                            setActiveTab("advisor");
-                            setAnalysisData(null);
-                        }}
-                    >
-                        <div className="flex flex-col">
+                    <div className="flex items-center space-x-8">
+                        {/* Logo / Home Link */}
+                        <div
+                            className="flex items-center cursor-pointer group"
+                            onClick={() => {
+                                setActiveTab("advisor");
+                                setAnalysisData(null);
+                            }}
+                        >
                             <span className="text-3xl font-black text-netflix-red tracking-tighter leading-none uppercase">Fónica</span>
                         </div>
 
+                        {/* Navigation Links */}
                         <div className="hidden md:flex items-center space-x-6">
                             {[
                                 { id: "advisor", label: "Identificar", icon: Zap },
