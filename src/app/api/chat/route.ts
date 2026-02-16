@@ -91,6 +91,9 @@ IMPORTANTE: Dirígete al usuario exclusivamente como "audiófilo". Responde SIEM
 
         // Post-processing forced replacement for 'colega'
         text = text.replace(/colega/gi, "audiófilo");
+        text = text.replace(/¡Hola audiófilo!/gi, "¡Hola audiófilo!"); // Ensure punctuation sync if needed
+
+        console.log("Response post-processed for persona consistency.");
 
         return NextResponse.json({ role: "assistant", content: text });
     } catch (error: any) {
