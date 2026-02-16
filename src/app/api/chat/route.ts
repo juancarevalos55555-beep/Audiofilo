@@ -62,7 +62,7 @@ IMPORTANTE: Dirígete al usuario exclusivamente como "audiófilo". Responde SIEM
             return NextResponse.json({ role: "assistant", content: "Por favor, escribe una pregunta más específica." });
         }
 
-        const result = await model.generateContent({
+        const result = await model.generateContentStream({
             contents,
             generationConfig: {
                 temperature: 0.4,
@@ -71,36 +71,31 @@ IMPORTANTE: Dirígete al usuario exclusivamente como "audiófilo". Responde SIEM
             }
         });
 
-        const response = await result.response;
-        let text = "";
-        try {
-            text = response.text();
-        } catch (e) {
-            console.error("Error calling response.text():", e);
-            const candidate = response.candidates?.[0];
-            if (candidate?.finishReason === "SAFETY") {
-                text = "Mi análisis técnico ha detectado contenido que no puedo procesar por políticas de seguridad. ¿Podrías reformular tu consulta?";
-            } else {
-                text = "He tenido un problema procesando tu consulta técnica. Por favor, intenta de nuevo.";
-            }
-        }
+        // Create a ReadableStream for the client
+        const stream = new ReadableStream({
+            async start(controller) {
+                const encoder = new TextEncoder();
+                try {
+                    for await (const chunk of result.stream) {
+                        let text = chunk.text();
+                        // Real-time replacement for streaming chunks
+                        text = text.replace(/colega/gi, "audiófilo");
+                        controller.enqueue(encoder.encode(text));
+                    }
+                } catch (e) {
+                    console.error("Streaming error:", e);
+                    controller.enqueue(encoder.encode("\n\n[Error en la transmisión técnica...]"));
+                } finally {
+                    controller.close();
+                }
+            },
+        });
 
-        if (!text || text.trim() === "") {
-            text = "Mi sensor de respuesta está en silencio. Probemos con una pregunta sobre componentes técnicos específicos.";
-        }
-
-        // Post-processing forced replacement for 'colega'
-        text = text.replace(/colega/gi, "audiófilo");
-        text = text.replace(/¡Hola audiófilo!/gi, "¡Hola audiófilo!"); // Ensure punctuation sync if needed
-
-        console.log("Response post-processed for persona consistency.");
-
-        return NextResponse.json({ role: "assistant", content: text });
+        return new Response(stream, {
+            headers: { "Content-Type": "text/plain; charset=utf-8" },
+        });
     } catch (error: any) {
         console.error("Chat API Error:", error);
-        return NextResponse.json({
-            role: "assistant",
-            content: "Error Técnico [v8-flash-latest]: " + (error.message || "Interferencia en la señal.")
-        });
+        return new Response("Error Técnico: " + (error.message || "Interferencia."), { status: 500 });
     }
 }

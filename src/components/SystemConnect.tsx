@@ -103,18 +103,46 @@ export default function SystemConnect() {
                     userName: user?.name || "Audiófilo"
                 }),
             });
-            const data = await response.json();
 
-            if (data.role && data.content) {
-                const aiMsg = {
-                    ...data,
-                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                };
-                setChatMessages(prev => [...prev, aiMsg]);
-                setMsgCount(prev => prev + 1);
-            } else {
-                throw new Error(data.error || "Respuesta vacía");
+            if (!response.ok) throw new Error("Error en la conexión con el asesor.");
+            if (!response.body) throw new Error("No se recibió respuesta del asesor.");
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+
+            // Initial AI message holder
+            const aiMsg = {
+                role: "assistant",
+                content: "",
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+
+            setChatMessages(prev => [...prev, aiMsg]);
+            setIsChatLoading(false); // Hide spinner as soon as streaming starts
+
+            let fullContent = "";
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value, { stream: true });
+                fullContent += chunk;
+
+                setChatMessages(prev => {
+                    const newMessages = [...prev];
+                    newMessages[newMessages.length - 1] = {
+                        ...aiMsg,
+                        content: fullContent
+                    };
+                    return newMessages;
+                });
+
+                // Smooth scroll during streaming if near bottom
+                chatEndRef.current?.scrollIntoView({ behavior: "instant" });
             }
+
+            setMsgCount(prev => prev + 1);
+
         } catch (error: any) {
             console.error("Chat Error:", error);
             setChatMessages(prev => [...prev, {
