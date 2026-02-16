@@ -146,10 +146,10 @@ export default function SystemConnect() {
     ];
 
     return (
-        <div className="fixed inset-x-0 bottom-0 top-20 bg-netflix-black z-40 flex flex-col animate-in fade-in duration-1000">
-            <div className="max-w-4xl mx-auto w-full flex-1 flex flex-col bg-[#1a1a1a] md:my-4 md:rounded-xl border-x border-b md:border border-[#404040] overflow-hidden relative shadow-2xl bg-gradient-to-b from-[#1a1a1a] to-[#0f0f0f]">
+        <div className="w-full h-[calc(100vh-80px)] flex flex-col pt-4 pb-4 px-4 md:px-6 animate-in fade-in duration-1000">
+            <div className="max-w-4xl mx-auto w-full flex-1 flex flex-col bg-[#1a1a1a] rounded-xl border border-[#404040] overflow-hidden relative shadow-2xl bg-gradient-to-b from-[#1a1a1a] to-[#0f0f0f]">
                 {/* Chat Header */}
-                <div className="sticky top-0 px-6 py-4 bg-[#1a1a1a] border-b border-[#404040] flex items-center justify-between z-50">
+                <div className="sticky top-0 px-6 py-4 bg-[#1a1a1a] border-b border-[#404040] flex items-center justify-between z-30">
                     <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 rounded-full bg-[#2d2d2d] border border-[#FFD700]/30 flex items-center justify-center">
                             <Logo className="w-6 h-6" />
