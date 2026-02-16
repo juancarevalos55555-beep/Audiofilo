@@ -32,24 +32,60 @@ export default function SystemConnect() {
     const diagramRef = useRef<HTMLDivElement>(null);
 
     const exportToPDF = async () => {
-        if (!diagramRef.current) return;
+        if (!diagramRef.current) {
+            alert("No hay esquema generado para exportar.");
+            return;
+        }
+
         try {
             const canvas = await html2canvas(diagramRef.current, {
                 backgroundColor: '#121212',
-                scale: 2,
+                scale: 3, // Higher scale for better quality
                 logging: false,
-                useCORS: true
+                useCORS: true,
+                allowTaint: true
             });
+
             const imgData = canvas.toDataURL('image/png');
             const pdf = new jsPDF('p', 'mm', 'a4');
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
 
-            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-            pdf.save(`Esquema_Fonica_${new Date().getTime()}.pdf`);
+            // Calculate height while maintaining aspect ratio
+            const imgHeight = (canvas.height * pageWidth) / canvas.width;
+
+            // Background color for the whole page
+            pdf.setFillColor(18, 18, 18);
+            pdf.rect(0, 0, pageWidth, pageHeight, 'F');
+
+            // Project Title Header
+            pdf.setTextColor(255, 215, 0); // Gold
+            pdf.setFontSize(22);
+            pdf.setFont("helvetica", "bold");
+            pdf.text("FÓNICA", pageWidth / 2, 20, { align: "center" });
+
+            pdf.setTextColor(150, 150, 150);
+            pdf.setFontSize(10);
+            pdf.text("REPORTE TÉCNICO DE CONFIGURACIÓN", pageWidth / 2, 28, { align: "center" });
+
+            // Add the diagram image
+            pdf.addImage(imgData, 'PNG', 0, 35, pageWidth, imgHeight);
+
+            // Footer
+            const footerY = 35 + imgHeight + 10;
+            if (footerY < pageHeight - 20) {
+                pdf.setDrawColor(64, 64, 64);
+                pdf.line(20, footerY, pageWidth - 20, footerY);
+
+                pdf.setTextColor(100, 100, 100);
+                pdf.setFontSize(8);
+                pdf.text("© 2026 FÓNICA - Inteligencia Artificial para Audiófilos", pageWidth / 2, footerY + 10, { align: "center" });
+            }
+
+            pdf.save(`Fonica_Reporte_${new Date().toISOString().split('T')[0]}.pdf`);
         } catch (err) {
             console.error("PDF Export Error:", err);
-            alert("No se pudo generar el PDF.");
+            alert("Error al generar el PDF. Asegúrate de que el esquema sea visible.");
         }
     };
 
