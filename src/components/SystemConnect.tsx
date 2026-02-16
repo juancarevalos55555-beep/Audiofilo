@@ -179,33 +179,34 @@ export default function SystemConnect() {
                 </div>
 
                 {/* Messages Area */}
-                <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 scrollbar-hide">
-                    <div
-                        key={i}
-                        id={`msg-${i}`}
-                        className={clsx(
-                            "flex flex-col space-y-2 max-w-[85%] md:max-w-[70%]",
-                            msg.role === "user" ? "ml-auto items-end" : "mr-auto items-start"
-                        )}
-                    >
-                        <div className={clsx(
-                            "px-5 py-4 rounded-2xl text-sm md:text-base leading-relaxed whitespace-pre-wrap shadow-lg",
-                            msg.role === "user"
-                                ? "bg-[#3a3a3a] text-white rounded-tr-none"
-                                : "bg-[#2d2d2d] text-white border-l-[4px] border-l-[#FFD700] rounded-tl-none"
-                        )}>
-                            {msg.content}
+                <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 scrollbar-hide relative">
+                    {chatMessages.map((msg, i) => (
+                        <div
+                            key={i}
+                            id={`msg-${i}`}
+                            className={clsx(
+                                "flex flex-col space-y-2 max-w-[85%] md:max-w-[70%]",
+                                msg.role === "user" ? "ml-auto items-end" : "mr-auto items-start"
+                            )}
+                        >
+                            <div className={clsx(
+                                "px-5 py-4 rounded-2xl text-sm md:text-base leading-relaxed whitespace-pre-wrap shadow-lg",
+                                msg.role === "user"
+                                    ? "bg-[#3a3a3a] text-white rounded-tr-none"
+                                    : "bg-[#2d2d2d] text-white border-l-[4px] border-l-[#FFD700] rounded-tl-none"
+                            )}>
+                                {msg.content}
+                            </div>
+                            <div className="flex items-center space-x-2 px-2">
+                                <span className="text-[10px] text-netflix-muted font-bold uppercase tracking-widest">
+                                    {(msg as any).timestamp}
+                                </span>
+                                <span className="text-[10px] text-[#FFD700]/40 font-bold uppercase tracking-widest">•</span>
+                                <span className="text-[10px] text-netflix-muted font-bold uppercase tracking-widest">
+                                    {msg.role === "user" ? (user?.name || "Tú") : "Experto Audiofilo"}
+                                </span>
+                            </div>
                         </div>
-                        <div className="flex items-center space-x-2 px-2">
-                            <span className="text-[10px] text-netflix-muted font-bold uppercase tracking-widest">
-                                {(msg as any).timestamp}
-                            </span>
-                            <span className="text-[10px] text-[#FFD700]/40 font-bold uppercase tracking-widest">•</span>
-                            <span className="text-[10px] text-netflix-muted font-bold uppercase tracking-widest">
-                                {msg.role === "user" ? (user?.name || "Tú") : "Experto Audiofilo"}
-                            </span>
-                        </div>
-                    </div>
                     ))}
                     {isChatLoading && (
                         <div className="flex flex-col items-start mr-auto space-y-3 px-2">
