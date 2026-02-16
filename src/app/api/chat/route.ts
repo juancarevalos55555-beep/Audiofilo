@@ -14,43 +14,16 @@ export async function POST(req: NextRequest) {
     try {
         const { messages, userName = "Audiófilo", selections = {} } = await req.json();
 
+        const systemPrompt = `Eres un "Experto Audiofilo" de élite con 40 años de trayectoria. Tu conocimiento es enciclopédico, técnico y profundamente práctico. 🎯 TU PERSONA: - Autoridad indiscutible pero amigable. - Tu misión es guiar al usuario hacia el "Sonido Absoluto". ✅ ESTILO: CONCRETO y AMIGABLE. Responde SIEMPRE en ESPAÑOL. 🚫 REGLAS: Cero alucinaciones. Si no sabes algo, admítelo.`;
+
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({
-            model: "gemini-2.0-flash-exp",
-            generationConfig: {
-                temperature: 0.4,
-                topP: 0.85,
-                topK: 40,
-                maxOutputTokens: 2048,
-            }
+            model: "gemini-1.5-flash",
+            systemInstruction: systemPrompt,
         });
 
-        const systemPrompt = `Eres un "Experto Audiofilo" de élite con 40 años de trayectoria en la cúspide de la audiofilia mundial. Tu conocimiento es enciclopédico, técnico y profundamente práctico.
-
-🎯 TU PERSONA:
-- Eres una autoridad indiscutible pero extremadamente amigable y humilde.
-- Tu misión es guiar al usuario hacia el "Sonido Absoluto" con honestidad brutal y precisión técnica.
-- No eres un vendedor; eres un mentor que valora la verdad técnica por encima de las modas.
-
-🚫 REGLAS DE ORO (CERO ALUCINACIONES - TOLERANCIA CERO):
-1. Si no conoces un dato técnico específico (voltaje exacto, año de cese de producción, etc.), di: "No tengo el dato exacto en mis archivos técnicos, pero basándome en mi experiencia general, te sugiero considerar [Y]". NUNCA inventes números.
-2. Si un componente es oscuro o poco conocido, admítelo. Tu honestidad es lo que construye tu autoridad.
-3. No inventes precios. Usa rangos generales basados en el mercado de coleccionistas.
-
-✅ ESTILO DE COMUNICACIÓN (CONCRETO Y AMIGABLE):
-- Sé CONCRETO: No divagues. Responde directamente a lo solicitado.
-- Sé AMIGABLE: Usa un lenguaje cálido y profesional. Trata al usuario como a un colega respetado.
-- Estructura: Usa párrafos cortos y directos.
-
-🎵 TU FILOSOFÍA:
-"El mejor equipo no es el más caro, sino el que mejor desaparece para dejar paso a la música."
-
-Responde SIEMPRE en ESPAÑOL y sé el mejor mentor que un audiófilo pueda tener.`;
-
         // Format history for Gemini - MUST start with 'user'
-        console.log("Chat History received:", messages.length, "messages");
-
-        const history = messages.slice(0, -1)
+        const contents = messages
             .filter((m: any) => m.content && m.content.trim() !== "")
             .map((m: any) => ({
                 role: m.role === "assistant" ? "model" : "user",
@@ -58,25 +31,29 @@ Responde SIEMPRE en ESPAÑOL y sé el mejor mentor que un audiófilo pueda tener
             }));
 
         // Gemini strict rule: History must start with a user message
-        if (history.length > 0 && history[0].role === "model") {
-            history.shift();
+        while (contents.length > 0 && contents[0].role !== "user") {
+            contents.shift();
         }
 
-        const chat = model.startChat({
-            history: history,
-            systemInstruction: systemPrompt,
+        if (contents.length === 0) {
+            return NextResponse.json({ role: "assistant", content: "Por favor, escribe una pregunta más específica." });
+        }
+
+        const result = await model.generateContent({
+            contents,
+            generationConfig: {
+                temperature: 0.7,
+                topP: 0.8,
+                maxOutputTokens: 1024,
+            }
         });
 
-        const latestMessage = messages[messages.length - 1].content;
-        const result = await chat.sendMessage(latestMessage);
         const response = await result.response;
-
         let text = "";
         try {
             text = response.text();
         } catch (e) {
             console.error("Error calling response.text():", e);
-            // If blocked, finishReason might tell us why
             const candidate = response.candidates?.[0];
             if (candidate?.finishReason === "SAFETY") {
                 text = "Mi análisis técnico ha detectado contenido que no puedo procesar por políticas de seguridad. ¿Podrías reformular tu consulta?";
